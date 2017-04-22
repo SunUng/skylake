@@ -25,12 +25,10 @@ S.WT = function (cb) {
 S.WT.prototype = {
 
     on: function () {
-        S.WTDisable.off()
         this.listeners('add')
     },
 
     off: function () {
-        S.WTDisable.on()
         this.listeners('remove')
     },
 

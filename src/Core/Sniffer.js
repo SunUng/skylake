@@ -54,6 +54,6 @@ S.Sniffer = {
     },
 
     get isTouch () {
-        return 'ontouchend' in window
+        return 'ontouchstart' in window
     }
 }

@@ -1,27 +1,26 @@
 {
-  "name": "skylake",
-  "version": "2.1.0",
-  "description": "A light JavaScript library.",
-  "author": "Aristide Benoist",
-  "license": "MIT",
-  "main": "index.js",
-  "maintainers": [
-    "ariiiman <email@aristidebenoist.com>"
-  ],
-  "bugs": {
-    "url": "https://github.com/ariiiman/skylake/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ariiiman/skylake.git"
-  },
-  "devDependencies": {
-    "uglify-js": "2.8.22"
-  },
-  "scripts": {
-    "build": "bash build/bash/build.sh",
-    "push": "bash build/bash/push.sh"
-  },
-  "homepage": "https://github.com/ariiiman/skylake#readme"
+    "name": "skylake",
+    "version": "2.1.1",
+    "description": "A light JavaScript library.",
+    "author": "Aristide Benoist",
+    "license": "MIT",
+    "main": "index.js",
+    "maintainers": [
+        "ariiiman <email@aristidebenoist.com>"
+    ],
+    "bugs": {
+        "url": "https://github.com/ariiiman/skylake/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ariiiman/skylake.git"
+    },
+    "devDependencies": {
+        "uglify-js": "2.8.22"
+    },
+    "scripts": {
+        "build": "bash build/bash/build.sh",
+        "push": "bash build/bash/push.sh"
+    },
+    "homepage": "https://github.com/ariiiman/skylake#readme"
 }
-

@@ -6,6 +6,7 @@ S.WTDisable.off()
 */
 
 S.WTDisable = (function () {
+
     var on = function () {
         listeners('add')
     }
@@ -15,9 +16,17 @@ S.WTDisable = (function () {
     }
 
     function listeners (action) {
-        var e = S.Sniffer.isTouch ? 'touchmove' : 'mouseWheel'
+        var t
 
-        S.Listen(document, action, e, prevent)
+        if (S.Sniffer.isTouch) {
+            var c = action === 'add' ? 'none' : ''
+            S.Dom.body.style.touchAction = c
+            t = 'touchmove'
+        } else {
+            t = 'mouseWheel'
+        }
+
+        S.Listen(document, action, t, prevent)
     }
 
     function prevent (e) {
