@@ -7,7 +7,6 @@ const isTouch = S.Sniffer.isTouch
 */
 
 S.Sniffer = {
-
     uA: navigator.userAgent.toLowerCase(),
 
     get isAndroid () {

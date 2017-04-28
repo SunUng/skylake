@@ -5,17 +5,12 @@ S.WTDisable.off()
 
 */
 
-S.WTDisable = (function () {
+S.WTDisable = {
+    prevent: function (e) {
+        e.preventDefault()
+    },
 
-    var on = function () {
-        listeners('add')
-    }
-
-    var off = function () {
-        listeners('remove')
-    }
-
-    function listeners (action) {
+    listeners: function (action) {
         var t
 
         if (S.Sniffer.isTouch) {
@@ -26,15 +21,14 @@ S.WTDisable = (function () {
             t = 'mouseWheel'
         }
 
-        S.Listen(document, action, t, prevent)
-    }
+        S.Listen(document, action, t, this.prevent)
+    },
 
-    function prevent (e) {
-        e.preventDefault()
-    }
+    on: function () {
+        this.listeners('add')
+    },
 
-    return {
-        on: on,
-        off: off
+    off: function () {
+        this.listeners('remove')
     }
-}())
+}

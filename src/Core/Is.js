@@ -5,25 +5,19 @@ const isObject = S.Is.object(varToCheck)
 
 */
 
-S.Is = (function () {
-    var string = function (v) {
+S.Is = {
+    string: function (v) {
         return typeof v === 'string'
-    }
+    },
 
-    var object = function (v) {
+    object: function (v) {
         return v === Object(v)
-    }
+    },
 
-    var array = function (v) {
+    array: function (v) {
         return v.constructor === Array
     }
-
-    return {
-        string: string,
-        object: object,
-        array: array
-    }
-}())
+}
 
 /*
     TODO

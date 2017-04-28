@@ -19,7 +19,6 @@ S.Throttle = function (options) {
 }
 
 S.Throttle.prototype = {
-
     init: function () {
         this.startTime = Date.now()
 
@@ -41,5 +40,4 @@ S.Throttle.prototype = {
             this.opts.callback()
         }
     }
-
 }

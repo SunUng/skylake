@@ -10,7 +10,6 @@ rafIndex.cancel()
 */
 
 S.RafIndex = function () {
-
     this.start = function (cb) {
         this.rafCb = S.Raf(cb)
     }

@@ -6,7 +6,6 @@ const path = S.Win.path
 */
 
 S.Win = {
-
     get w () {
         return window.innerWidth
     },
@@ -30,5 +29,4 @@ S.Win = {
     get pageY () {
         return window.pageYOffset
     }
-
 }
