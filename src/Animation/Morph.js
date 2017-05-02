@@ -26,6 +26,7 @@ S.Morph = function (opts) {
     this.delay = opts.delay || 0
     this.cbDelay = opts.callbackDelay || 0
     this.cb = opts.callback
+    this.round = 1000
 
     this.origin = {
         start: this.el.getAttribute(this.type),
@@ -104,7 +105,7 @@ S.Morph.prototype = {
 
         for (var i = 0; i < this.qty; i++) {
             isLetterArr[i] = this.isLetter(this.startArr[i])
-            value[i] = isLetterArr[i] ? this.startArr[i] : S.Lerp.init(+this.startArr[i], +this.endArr[i], easeMultiplier)
+            value[i] = isLetterArr[i] ? this.startArr[i] : Math.round(S.Lerp.init(+this.startArr[i], +this.endArr[i], easeMultiplier) * this.round) / this.round
             current += value[i] + ' '
             this.current = current.trim()
         }

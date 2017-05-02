@@ -69,6 +69,7 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
         this.opts = opts || false
     }
 
+    this.round = 1000
     this.unit = ''
 
     this.noMultiT = !S.Is.array(this.prop)
@@ -154,11 +155,11 @@ S.Merom.prototype = {
         var easeMultiplier = this.easePack[this.ease](multiplier)
 
         if (this.noMultiT) {
-            this.val = S.Lerp.init(+this.start, +this.end, easeMultiplier)
+            this.val = this.lerp(+this.start, +this.end, easeMultiplier)
         } else {
             this.val = []
             for (var i = 0; i < this.updateQty; i++) {
-                this.val[i] = S.Lerp.init(+this.start[i], +this.end[i], easeMultiplier)
+                this.val[i] = this.lerp(+this.start[i], +this.end[i], easeMultiplier)
             }
         }
 
@@ -173,6 +174,10 @@ S.Merom.prototype = {
                 S.Delay(this.opts.callback, this.callbackDelay)
             }
         }
+    },
+
+    lerp: function (start, end, easeM) {
+        return Math.round(S.Lerp.init(start, end, easeM) * this.round) / this.round
     },
 
     singleUp: function () {
