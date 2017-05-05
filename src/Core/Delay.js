@@ -1,11 +1,17 @@
 /*
 
-S.Delay(callback, delay)
+this.d = new S.Delay(callback, duration)
+this.d.stop()
 
 */
 
-S.Delay = function (cb, delay) {
-    window.setTimeout(function () {
-        cb()
-    }, delay)
+S.Delay = function (cb, duration) {
+    this.t = window.setTimeout(cb, duration)
+}
+
+S.Delay.prototype = {
+
+    stop: function () {
+        window.clearTimeout(this.t)
+    }
 }
