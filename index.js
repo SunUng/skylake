@@ -1,7 +1,7 @@
 /**
  * Skylake
  *
- * Version   →  2.1.4
+ * Version   →  2.2.0
  * Github    →  https://github.com/ariiiman/skylake
  * License   →  http://opensource.org/licenses/MIT
  * Author    →  Copyright © 2017 Aristide Benoist
