@@ -1,5 +1,14 @@
 /*
 
+LENGTH ELEMENT
+──────────────
+
+"lengthEl" arg is optional
+The total length of the line is calculated with him if he's present
+When the starting size is different from the end
+
+Ex : A morphing at the same time
+
 EXPLOITATION HTML - CIRCLE SHAPE
 ────────────────────────────────
 
@@ -40,9 +49,10 @@ EXPLOITATION CSS
 
 */
 
-S.AnimatedLine = function (shape) {
+S.AnimatedLine = function (shape, lengthEl) {
     this.shape = S.Selector.el(shape)
     this.shapeL = this.shape.length
+    this.lEl = lengthEl
 
     this.merom = []
 }
@@ -101,16 +111,13 @@ S.AnimatedLine.prototype = {
     },
 
     getShapeLength: function (shape) {
-        var shapeLength
-
         if (shape.tagName === 'circle') {
             var radius = shape.getAttribute('r')
-            shapeLength = 2 * radius * Math.PI
+            return 2 * radius * Math.PI
         } else {
-            shapeLength = shape.getTotalLength()
+            var el = this.lEl || shape
+            return el.getTotalLength()
         }
-
-        return shapeLength
     }
 
 }
