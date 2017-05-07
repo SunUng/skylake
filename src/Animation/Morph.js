@@ -45,6 +45,9 @@ S.Morph = function (opts) {
             this.coeff = this.origin.duration / Math.abs(this.origin.arr.end[i] - this.origin.arr.start[i])
             this.no = i
             break
+        } else {
+            this.coeff = 0
+            this.no = 0
         }
     }
 
@@ -127,7 +130,7 @@ S.Morph.prototype = {
         for (var i = 0; i < coordsSplit.length; i++) {
             var coordsSplit2 = coordsSplit[i].split(',')
             for (var j = 0; j < coordsSplit2.length; j++) {
-                coordsArr.push(coordsSplit2[j])
+                coordsArr.push(+coordsSplit2[j])
             }
         }
         return coordsArr
