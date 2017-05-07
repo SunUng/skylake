@@ -4,7 +4,7 @@
 
 const morphAnimation = new S.Morph({
     type: 'polygon',
-    element: S.Geb.id('polygon'),
+    element: '.polygon',
     newCoords: '50.2,12.8 63,0 63,4.1 63,7 63,10 63,13.1 63,17',
     duration: 1100,
     ease: 'Power4InOut',
@@ -21,7 +21,8 @@ morphAnimation.reverse()
 
 S.Morph = function (opts) {
     this.type = opts.type === 'polygon' ? 'points' : 'd'
-    this.el = opts.element
+    this.el = S.Selector.el(opts.element)
+    this.elL = this.el.length
     this.ease = opts.ease
     this.delay = opts.delay || 0
     this.cbDelay = opts.callbackDelay || 0
@@ -29,7 +30,7 @@ S.Morph = function (opts) {
     this.round = 1000
 
     this.origin = {
-        start: this.el.getAttribute(this.type),
+        start: this.el[0].getAttribute(this.type),
         end: opts.newCoords,
         duration: opts.duration
     }
@@ -113,14 +114,20 @@ S.Morph.prototype = {
             this.current = current.trim()
         }
 
-        this.el.setAttribute(this.type, this.current)
+        this.updateDom(this.current)
 
         if (multiplier < 1) {
             this.raf.start(this.loop)
         } else {
             this.raf.cancel()
-            this.el.setAttribute(this.type, this.end)
+            this.updateDom(this.end)
             this.getCb()
+        }
+    },
+
+    updateDom: function (v) {
+        for (var i = 0; i < this.elL; i++) {
+            this.el[i].setAttribute(this.type, v)
         }
     },
 
