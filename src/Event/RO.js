@@ -4,7 +4,7 @@ const RO = new S.RO({
     callback: callback,
     throttle: {
         delay: 100,
-        atEnd: true
+        onlyAtEnd: true
     }
 })
 
@@ -23,7 +23,7 @@ S.RO = function (options) {
     this.throttle = new S.Throttle({
         callback: this.getRAF,
         delay: this.opts.throttle.delay,
-        atEnd: this.opts.throttle.atEnd
+        onlyAtEnd: this.opts.throttle.onlyAtEnd
     })
     this.rafTicking = new S.RafTicking()
 }

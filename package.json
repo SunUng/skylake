@@ -1,6 +1,6 @@
 {
     "name": "skylake",
-    "version": "2.2.3",
+    "version": "2.3.0",
     "description": "A light JavaScript library.",
     "author": "Aristide Benoist",
     "license": "MIT",
@@ -24,4 +24,3 @@
     },
     "homepage": "https://github.com/ariiiman/skylake#readme"
 }
-

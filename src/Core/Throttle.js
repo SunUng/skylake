@@ -3,41 +3,36 @@
 const throttle = new S.Throttle({
     callback: callback,
     delay: 200
-    atEnd: true
+    onlyAtEnd: true
 })
 
 throttle.init()
 
 */
 
-S.Throttle = function (options) {
-    this.timeout = false
-    this.timer = 0
-    this.opts = options
-
-    S.BindMaker(this, ['atEndController'])
+S.Throttle = function (opts) {
+    this.delay = opts.delay
+    this.cb = opts.callback
+    this.onlyAtEnd = opts.onlyAtEnd
+    this.last
+    this.timer
 }
 
 S.Throttle.prototype = {
     init: function () {
-        this.startTime = Date.now()
-
-        if (!this.timeout) {
-            this.timeout = true
-            S.Delay(this.atEndController, this.opts.delay)
-        }
-    },
-
-    atEndController: function () {
-        if (Date.now() - this.startTime < this.opts.delay) {
-            this.timer = S.Delay(this.atEndController, this.opts.delay)
-            if (!this.opts.atEnd) {
-                this.opts.callback()
-            }
-        } else {
+        var self = this
+        var now = Date.now()
+        if (this.last && now < this.last + this.delay) {
             clearTimeout(this.timer)
-            this.timeout = false
-            this.opts.callback()
+            this.timer = setTimeout(function () {
+                self.last = now
+                self.cb()
+            }, this.delay)
+        } else {
+            this.last = now
+            if (!this.onlyAtEnd) {
+                this.cb()
+            }
         }
     }
 }

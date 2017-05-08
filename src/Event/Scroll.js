@@ -3,8 +3,8 @@
 const scroll = new S.Scroll({
     callback: callback,
     throttle: {
-        delay: 200,
-        atEnd: true
+        delay: 40,
+        onlyAtEnd: false
     }
 })
 
@@ -26,7 +26,7 @@ S.Scroll = function (options) {
     this.throttle = new S.Throttle({
         callback: this.getRAF,
         delay: this.opts.throttle.delay,
-        atEnd: this.opts.throttle.atEnd
+        onlyAtEnd: this.opts.throttle.onlyAtEnd
     })
     this.rafTicking = new S.RafTicking()
 }
