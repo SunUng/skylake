@@ -7,26 +7,26 @@ const path = S.Win.path
 
 S.Win = {
     get w () {
-        return window.innerWidth
+        return innerWidth
     },
 
     get h () {
-        return window.innerHeight
+        return innerHeight
     },
 
     get path () {
-        return window.location.pathname
+        return location.pathname
     },
 
     get hostname () {
-        return window.location.hostname
+        return location.hostname
     },
 
     get href () {
-        return window.location.href
+        return location.href
     },
 
     get pageY () {
-        return window.pageYOffset
+        return pageYOffset
     }
 }

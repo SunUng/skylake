@@ -100,11 +100,8 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
 S.Merom.prototype = {
 
     play: function () {
-        var self = this
-        self.isPaused = false
-        S.Delay(function () {
-            self.getRaf()
-        }, self.delay)
+        this.isPaused = false
+        setTimeout(this.getRaf, this.delay)
     },
 
     pause: function (status) {
@@ -171,7 +168,7 @@ S.Merom.prototype = {
             this.raf.cancel()
             this.update(this.end)
             if (this.opts.callback) {
-                S.Delay(this.opts.callback, this.callbackDelay)
+                setTimeout(this.opts.callback, this.callbackDelay)
             }
         }
     },

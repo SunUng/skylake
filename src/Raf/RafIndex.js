@@ -15,6 +15,6 @@ S.RafIndex = function () {
     }
 
     this.cancel = function () {
-        window.cancelAnimationFrame(this.rafCb)
+        cancelAnimationFrame(this.rafCb)
     }
 }

@@ -56,7 +56,7 @@ S.Scroll.prototype = {
     },
 
     run: function () {
-        var currentScrollY = window.pageYOffset
+        var currentScrollY = pageYOffset
         var delta = -(currentScrollY - this.startScrollY)
 
         // Reset start scroll y

@@ -58,19 +58,15 @@ S.Morph = function (opts) {
 
     this.raf = new S.RafIndex()
 
-    S.BindMaker(this, ['loop'])
+    S.BindMaker(this, ['getRaf', 'loop'])
 }
 
 S.Morph.prototype = {
 
     play: function () {
-        var self = this
+        this.init(0)
 
-        self.init(0)
-
-        S.Delay(function () {
-            self.getRaf()
-        }, self.delay)
+        setTimeout(this.getRaf, this.delay)
     },
 
     pause: function () {
@@ -149,7 +145,7 @@ S.Morph.prototype = {
 
     getCb: function () {
         if (this.cb) {
-            S.Delay(this.cb, this.cbDelay)
+            setTimeout(this.cb, this.cbDelay)
         }
     }
 

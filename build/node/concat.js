@@ -7,7 +7,6 @@ const srcArr = [
     'src/Animation/Morph.js',
     'src/Animation/Timeline.js',
     'src/Core/BindMaker.js',
-    'src/Core/Delay.js',
     'src/Core/EasePack.js',
     'src/Core/Is.js',
     'src/Core/Lerp.js',
