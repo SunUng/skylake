@@ -7,23 +7,11 @@ For 3dx & 3dy properties :
 ►►►  string   →   px
 ►►►  int      →   %
 
-Delay :
-►►►  delay           →   int
-►►►  callbackDelay   →   int
-
-Reverse :
-►►►  if 'duration' and 'ease' are not defined, it inherits the play() properties
-
-During :
-►►►  example : elements needs to move during scroll
-
 EXAMPLES
 ────────
 
 const animation1 = new S.Merom('.class', '3dy', 0, 100, 1000, 'Power4Out')
 animation1.play()
-animation1.pause('on')
-animation1.pause('off')
 
 const animation2 = new S.Merom(domElement, 'opacity', 1, 0, 1000, 'linear', {delay: 500, callbackDelay: 200, callback: myCallback})
 animation2.play()
@@ -37,28 +25,18 @@ animation4.reverse(opts)
 
 const animation5 = new S.Merom('.class', '3dx', 1, 1.2, 700, 'Power1In')
 animation5.play()
-animation5.pause('on')
-animation5.reset({delay: 400, callbackDelay: 700, callback: myCallback})
-
-TODO
-────
-
-S.Is.nodeList(this.el)
-
-So for now, animate elements with class :
-►►►  for one   →   passing dom element
-►►►  for all   →   '.myClass'
+animation5.pause()
 
 */
 
 S.Merom = function (element, prop, start, end, duration, ease, opts) {
-    this.prop = prop
-    this.start = start
-    this.end = end
-
     this.el = S.Selector.el(element)
     this.elL = this.el.length
-
+    this.prop = prop
+    this.origin = {
+        start: start,
+        end: end
+    }
     if (S.Is.object(duration)) {
         this.duration = 0
         this.ease = 'linear'
@@ -69,12 +47,19 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
         this.opts = opts || false
     }
 
+    this.delay = this.opts.delay || 0
+    this.callbackDelay = this.opts.callbackDelay || 0
+    this.cb = this.opts.callback
     this.round = 1000
     this.unit = ''
 
     this.noMultiT = !S.Is.array(this.prop)
-    if (this.noMultiT && (this.prop === '3dx' || this.prop === '3dy' || this.prop === 'height' || this.prop === 'width')) {
-        this.unit = this.getUnit(this.start)
+    var delta
+    if (this.noMultiT) {
+        if (this.prop === '3dx' || this.prop === '3dy' || this.prop === 'height' || this.prop === 'width') {
+            this.unit = this.getUnit(this.start)
+        }
+        delta = this.origin.end - this.origin.start
     } else {
         this.updateQty = this.prop.length
         for (var i = 0; i < this.updateQty; i++) {
@@ -84,15 +69,15 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
                 this.unitY = this.getUnit(this.start[i])
             }
         }
+        delta = this.origin.end[0] - this.origin.start[0]
     }
     this.update = this.noMultiT ? this.singleUp() : this.multiT
-
-    this.deltaTimeAtPause = 0
+    this.coeff = this.duration / Math.abs(delta)
 
     this.easePack = S.EasePack
     this.raf = new S.RafIndex()
 
-    this.delaysInit()
+    this.curr = this.origin.start
 
     S.BindMaker(this, ['getRaf', 'loop'])
 }
@@ -100,45 +85,38 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
 S.Merom.prototype = {
 
     play: function () {
-        this.isPaused = false
+        this.init(0)
+
         setTimeout(this.getRaf, this.delay)
     },
 
-    pause: function (status) {
-        if (status === 'on') {
-            this.isPaused = true
-            this.deltaTimeSave = this.deltaTime
-        } else {
-            this.deltaTimeAtPause = this.deltaTimeSave
-            this.delay = 0
-            this.play()
-        }
+    pause: function () {
+        this.isPaused = true
     },
 
     reverse: function (opts) {
-        this.pause('on')
+        this.init(1)
 
-        if (opts !== undefined) {
-            this.newEnd = opts.newEnd || false
-            this.duration = opts.duration || this.duration
-            this.ease = opts.ease || this.ease
-            this.opts = opts.opts || false
-        }
-
-        this.getReset()
+        this.getRaf()
     },
 
-    reset: function (opts) {
-        this.pause('on')
+    init: function (from) {
+        this.pause()
+        var param = from === 1 ? 'start' : 'end'
+        this.end = this.origin[param]
 
-        this.duration = 0
-        this.ease = 'linear'
-        this.opts = opts || false
-
-        this.getReset()
+        this.start = this.curr
+        var delta
+        if (this.noMultiT) {
+            delta = this.end - this.start
+        } else {
+            delta = this.end[0] - this.start[0]
+        }
+        this.duration = Math.abs(delta) * this.coeff
     },
 
     getRaf: function () {
+        this.isPaused = false
         this.startTime = Date.now()
         this.raf.start(this.loop)
     },
@@ -146,29 +124,27 @@ S.Merom.prototype = {
     loop: function () {
         if (this.isPaused) return
 
-        var currentTime = Date.now()
-        this.deltaTime = currentTime - this.startTime + this.deltaTimeAtPause
-        var multiplier = Math.min(this.deltaTime / this.duration, 1)
+        var multiplier = Math.min((Date.now() - this.startTime) / this.duration, 1)
         var easeMultiplier = this.easePack[this.ease](multiplier)
 
         if (this.noMultiT) {
-            this.val = this.lerp(+this.start, +this.end, easeMultiplier)
+            this.curr = this.lerp(+this.start, +this.end, easeMultiplier)
         } else {
-            this.val = []
+            this.curr = []
             for (var i = 0; i < this.updateQty; i++) {
-                this.val[i] = this.lerp(+this.start[i], +this.end[i], easeMultiplier)
+                this.curr[i] = this.lerp(+this.start[i], +this.end[i], easeMultiplier)
             }
         }
 
-        this.update(this.val)
+        this.update(this.curr)
 
         if (multiplier < 1) {
             this.raf.start(this.loop)
         } else {
             this.raf.cancel()
             this.update(this.end)
-            if (this.opts.callback) {
-                setTimeout(this.opts.callback, this.callbackDelay)
+            if (this.cb) {
+                setTimeout(this.cb, this.callbackDelay)
             }
         }
     },
@@ -236,10 +212,6 @@ S.Merom.prototype = {
 
     setScrollTop: function (val) {
         this.el[0][this.prop] = val
-
-        if (this.opts.during) {
-            this.opts.during(val)
-        }
     },
 
     setStyle: function (val) {
@@ -257,20 +229,6 @@ S.Merom.prototype = {
                 this.el[i].style[prop] = val + this.unit
             }
         }
-    },
-
-    delaysInit: function () {
-        this.delay = this.opts.delay || 0
-        this.callbackDelay = this.opts.callbackDelay || 0
-    },
-
-    getReset: function () {
-        this.end = this.newEnd || this.start
-        this.start = this.val || this.start
-
-        this.delaysInit()
-
-        this.play()
     },
 
     getUnit: function (valueToCheck) {

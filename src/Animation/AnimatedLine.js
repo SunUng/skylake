@@ -1,14 +1,5 @@
 /*
 
-LENGTH ELEMENT
-──────────────
-
-"lengthEl" arg is optional
-The total length of the line is calculated with him if he's present
-When the starting size is different from the end
-
-Ex : A morphing at the same time
-
 EXPLOITATION HTML - CIRCLE SHAPE
 ────────────────────────────────
 
@@ -25,18 +16,6 @@ EXPLOITATION HTML - PATH SHAPE
     <path class="shape" d="M1,50a49,49 0 1,0 98,0a49,49 0 1,0 -98,0"/>
 </svg>
 
-EXPLOITATION JS
-───────────────
-
-►►►  shape (circle, path)    →   '#id' or '.class' or domElement
-
-const animatedLine = new S.AnimatedLine('.shape')
-animatedLine.play(4000, 'Power1InOut', playCallback)
-animatedLine.reverse(1000, 'ExpoInOut', reverseCallback)
-animatedLine.pause('on')
-animatedLine.pause('off')
-animatedLine.reset()
-
 EXPLOITATION CSS
 ────────────────
 
@@ -47,75 +26,81 @@ EXPLOITATION CSS
     transition: opacity 10ms linear 10ms; /* debug IE
 }
 
+EXPLOITATION JS
+───────────────
+
+►►►  shape (circle, path)    →   '#id' or '.class' or domElement
+
+const animatedLine = new S.AnimatedLine(new S.AnimatedLine({
+    el: '.shape',
+    elWithLength: this.lEl, // optional
+    duration: 1000,
+    ease: 'linear',
+    callback: false
+})
+animatedLine.play()
+animatedLine.reverse()
+animatedLine.pause()
+
+ELEMENT WITH LENGTH
+───────────────────
+
+"elWithLength" arg is optional
+The total length of the line is calculated with him if he's present
+When the starting size is different from the end
+
+Ex : A morphing at the same time
+
 */
 
-S.AnimatedLine = function (shape, lengthEl) {
-    this.shape = S.Selector.el(shape)
-    this.shapeL = this.shape.length
-    this.lEl = lengthEl
+S.AnimatedLine = function (opts) {
+    this.el = S.Selector.el(opts.el)
+    this.elL = this.el.length
+    this.elWL = opts.elWithLength
+    this.duration = opts.duration
+    this.ease = opts.ease
 
+    this.shapeLength = []
+    this.cb = []
     this.merom = []
+
+    for (var i = 0; i < this.elL; i++) {
+        this.shapeLength[i] = this.getShapeLength(this.el[i])
+        this.cb[i] = i === this.elL - 1 ? opts.callback : false
+
+        this.el[i].style.strokeDasharray = this.shapeLength[i]
+        this.el[i].style.opacity = 1
+
+        this.merom[i] = new S.Merom(this.el[i], 'strokeDashoffset', this.shapeLength[i], 0, this.duration, this.ease, {callback: this.cb[i]})
+    }
 }
 
 S.AnimatedLine.prototype = {
 
-    play: function (duration, ease, cb) {
-        this.type = 'play'
-        this.run(duration, ease, cb)
-    },
-
-    reverse: function (duration, ease, cb) {
-        this.type = 'reverse'
-        this.run(duration, ease, cb)
-    },
-
-    run: function (duration, ease, cb) {
-        this.duration = duration
-        this.ease = ease
-        this.cb = cb
-        for (var i = 0; i < this.shapeL; i++) {
-            this.animationLine(this.shape[i], i)
+    play: function () {
+        for (var i = 0; i < this.elL; i++) {
+            this.merom[i].play()
         }
     },
 
-    pause: function (status) {
-        for (var i = 0; i < this.shapeL; i++) {
-            this.merom[i].pause(status)
+    pause: function () {
+        for (var i = 0; i < this.elL; i++) {
+            this.merom[i].pause()
         }
     },
 
-    reset: function () {
-        for (var i = 0; i < this.shapeL; i++) {
-            this.shape[i].style = ''
+    reverse: function () {
+        for (var i = 0; i < this.elL; i++) {
+            this.merom[i].reverse()
         }
     },
 
-    animationLine: function (shape, i) {
-        var shapeLength = this.getShapeLength(shape)
-        var start
-        var end
-        if (this.type === 'reverse') {
-            var shapeSDO = shape.style.strokeDashoffset
-            start = shapeSDO.charAt(shapeSDO.length - 1) === 'x' ? +shapeSDO.substring(0, shapeSDO.length - 2) : +shapeSDO
-            end = shapeLength
-        } else {
-            start = shapeLength
-            end = 0
-        }
-
-        shape.style.strokeDasharray = shapeLength
-        shape.style.opacity = 1
-
-        this.merom[i] = new S.Merom(shape, 'strokeDashoffset', start, end, this.duration, this.ease, {callback: this.cb})
-        this.merom[i].play()
-    },
-
-    getShapeLength: function (shape) {
-        if (shape.tagName === 'circle') {
-            var radius = shape.getAttribute('r')
+    getShapeLength: function (el) {
+        if (el.tagName === 'circle') {
+            var radius = el.getAttribute('r')
             return 2 * radius * Math.PI
         } else {
-            var el = this.lEl || shape
+            var el = this.elWL || el
             return el.getTotalLength()
         }
     }

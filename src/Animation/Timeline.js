@@ -5,8 +5,7 @@ tl.from('#element-0', '3dy', 0, 100, 1000, 'Power4Out', {delay: 500})
 tl.from('#element-1', 'opacity', 1, 0, 500, 'linear', {callbackDelay: 600, callback: myCallback})
 tl.play()
 
-tl.pause('on')
-tl.pause('off')
+tl.pause()
 
 tl.reverse([
     {
@@ -63,9 +62,9 @@ S.Timeline.prototype = {
         }
     },
 
-    pause: function (status) {
+    pause: function () {
         for (var i = 0; i < this.contentL(); i++) {
-            this.content[i].pause(status)
+            this.content[i].pause()
         }
     },
 
@@ -73,12 +72,6 @@ S.Timeline.prototype = {
         for (var i = 0; i < this.contentL(); i++) {
             const opt = !opts ? undefined : opts[i]
             this.content[i].reverse(opt)
-        }
-    },
-
-    reset: function (opts) {
-        for (var i = 0; i < this.contentL(); i++) {
-            this.content[i].reset(opts)
         }
     }
 

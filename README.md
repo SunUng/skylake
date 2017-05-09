@@ -30,17 +30,15 @@ Look at the **src** folder in the github repository for more information
 
     const animation = new S.Merom('.element', '3dy', 0, 100, 1000, 'Power4InOut')
     animation.play()
-    animation.pause('on')
-    animation.pause('off')
+    animation.reverse()
 
 ### Build sequences of Merom with Timeline
 
     const tl = new S.Timeline()
     tl.from('#element-0', '3dy', 0, 100, 1000, 'ExpoOut', {delay: 500})
-    tl.from('#element-1', 'opacity', 1, 0, 500, 'linear', {callback: myCallback})
+    tl.from('#element-1', 'opacity', 1, 0, 500, 'Power4In', {callback: myCallback})
     tl.play()
-    tl.pause('on')
-    tl.pause('off')
+    tl.pause()
 
 ## Author
 

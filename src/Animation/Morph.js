@@ -24,6 +24,7 @@ S.Morph = function (opts) {
     this.el = S.Selector.el(opts.element)
     this.elL = this.el.length
     this.ease = opts.ease
+    this.duration = opts.duration
     this.delay = opts.delay || 0
     this.cbDelay = opts.callbackDelay || 0
     this.cb = opts.callback
@@ -31,8 +32,7 @@ S.Morph = function (opts) {
 
     this.origin = {
         start: this.el[0].getAttribute(this.type),
-        end: opts.newCoords,
-        duration: opts.duration
+        end: opts.newCoords
     }
     this.origin.arr = {
         start: this.getArr(this.origin.start),
@@ -43,7 +43,7 @@ S.Morph = function (opts) {
 
     for (var i = 0; i < this.qty; i++) {
         if (this.origin.arr.start[i] !== this.origin.arr.end[i]) {
-            this.coeff = this.origin.duration / Math.abs(this.origin.arr.end[i] - this.origin.arr.start[i])
+            this.coeff = this.duration / Math.abs(this.origin.arr.end[i] - this.origin.arr.start[i])
             this.no = i
             break
         } else {
@@ -52,7 +52,7 @@ S.Morph = function (opts) {
         }
     }
 
-    this.current = this.origin.start
+    this.curr = this.origin.start
 
     this.easePack = S.EasePack
 
@@ -80,15 +80,17 @@ S.Morph.prototype = {
     },
 
     init: function (from) {
+        this.pause()
         var param = from === 1 ? 'start' : 'end'
         this.end = this.origin[param]
         this.endArr = this.origin.arr[param]
 
-        this.startArr = this.getArr(this.current)
+        this.startArr = this.getArr(this.curr)
         this.duration = Math.abs(this.endArr[this.no] - this.startArr[this.no]) * this.coeff
     },
 
     getRaf: function () {
+        this.isPaused = false
         this.startTime = Date.now()
         this.raf.start(this.loop)
     },
@@ -100,17 +102,17 @@ S.Morph.prototype = {
         var easeMultiplier = this.easePack[this.ease](multiplier)
 
         var isLetterArr = []
-        var value = []
-        var current = ''
+        var val = []
+        var curr = ''
 
         for (var i = 0; i < this.qty; i++) {
             isLetterArr[i] = this.isLetter(this.startArr[i])
-            value[i] = isLetterArr[i] ? this.startArr[i] : Math.round(S.Lerp.init(+this.startArr[i], +this.endArr[i], easeMultiplier) * this.round) / this.round
-            current += value[i] + ' '
-            this.current = current.trim()
+            val[i] = isLetterArr[i] ? this.startArr[i] : Math.round(S.Lerp.init(+this.startArr[i], +this.endArr[i], easeMultiplier) * this.round) / this.round
+            curr += val[i] + ' '
+            this.curr = curr.trim()
         }
 
-        this.updateDom(this.current)
+        this.updateDom(this.curr)
 
         if (multiplier < 1) {
             this.raf.start(this.loop)
