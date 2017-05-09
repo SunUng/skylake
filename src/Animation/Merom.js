@@ -37,6 +37,7 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
         start: start,
         end: end
     }
+
     if (S.Is.object(duration)) {
         this.duration = 0
         this.ease = 'linear'
@@ -57,19 +58,26 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
     var delta
     if (this.noMultiT) {
         if (this.prop === '3dx' || this.prop === '3dy' || this.prop === 'height' || this.prop === 'width') {
-            this.unit = this.getUnit(this.start)
+            this.unit = this.getUnit(this.origin.start)
         }
         delta = this.origin.end - this.origin.start
     } else {
-        this.updateQty = this.prop.length
-        for (var i = 0; i < this.updateQty; i++) {
+        this.qty = this.prop.length
+        for (var i = 0; i < this.qty; i++) {
             if (this.prop[i] === '3dx') {
-                this.unitX = this.getUnit(this.start[i])
+                this.unitX = this.getUnit(this.origin.start[i])
             } else if (this.prop[i] === '3dy') {
-                this.unitY = this.getUnit(this.start[i])
+                this.unitY = this.getUnit(this.origin.start[i])
             }
         }
-        delta = this.origin.end[0] - this.origin.start[0]
+        // To combat cases where start = end → delta is null so duration is null
+        for (var i = 0; i < this.qty; i++) {
+            if (this.origin.start[i] !== this.origin.end[i]) {
+                this.no = i
+                break
+            }
+        }
+        delta = this.origin.end[this.no] - this.origin.start[this.no]
     }
     this.update = this.noMultiT ? this.singleUp() : this.multiT
     this.coeff = this.duration / Math.abs(delta)
@@ -84,8 +92,8 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
 
 S.Merom.prototype = {
 
-    play: function () {
-        this.init(0)
+    play: function (opts) {
+        this.init(0, opts)
 
         setTimeout(this.getRaf, this.delay)
     },
@@ -95,24 +103,36 @@ S.Merom.prototype = {
     },
 
     reverse: function (opts) {
-        this.init(1)
+        this.init(1, opts)
 
         this.getRaf()
     },
 
-    init: function (from) {
+    init: function (from, opts) {
         this.pause()
+
+        this.needEnd = true
+
         var param = from === 1 ? 'start' : 'end'
         this.end = this.origin[param]
 
         this.start = this.curr
-        var delta
-        if (this.noMultiT) {
-            delta = this.end - this.start
-        } else {
-            delta = this.end[0] - this.start[0]
-        }
+
+        var delta = this.noMultiT ? this.end - this.start : this.end[this.no] - this.start[this.no]
         this.duration = Math.abs(delta) * this.coeff
+
+        if (opts) {
+            this.end = opts.newEnd || this.end
+            this.duration = opts.duration || this.duration
+            this.ease = opts.ease || this.ease
+            this.cb = opts.callback || false
+            this.delay = opts.delay || 0
+            this.callbackDelay = opts.callbackDelay || 0
+        } else if (from === 1) {
+            this.cb = false
+            this.delay = 0
+            this.callbackDelay = 0
+        }
     },
 
     getRaf: function () {
@@ -131,7 +151,7 @@ S.Merom.prototype = {
             this.curr = this.lerp(+this.start, +this.end, easeMultiplier)
         } else {
             this.curr = []
-            for (var i = 0; i < this.updateQty; i++) {
+            for (var i = 0; i < this.qty; i++) {
                 this.curr[i] = this.lerp(+this.start[i], +this.end[i], easeMultiplier)
             }
         }
@@ -140,7 +160,8 @@ S.Merom.prototype = {
 
         if (multiplier < 1) {
             this.raf.start(this.loop)
-        } else {
+        } else if (this.needEnd) {
+            this.needEnd = false
             this.raf.cancel()
             this.update(this.end)
             if (this.cb) {
@@ -177,7 +198,7 @@ S.Merom.prototype = {
         var rotate = ''
         var scale = ''
 
-        for (var i = 0; i < this.updateQty; i++) {
+        for (var i = 0; i < this.qty; i++) {
             if (this.prop[i] === '3dx') {
                 t3dx = val[i] + this.unitX
             } else if (this.prop[i] === '3dy') {

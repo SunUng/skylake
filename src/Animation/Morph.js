@@ -41,6 +41,7 @@ S.Morph = function (opts) {
 
     this.qty = this.origin.arr.start.length
 
+    // To combat cases where start = end → delta is null so duration is null
     for (var i = 0; i < this.qty; i++) {
         if (this.origin.arr.start[i] !== this.origin.arr.end[i]) {
             this.coeff = this.duration / Math.abs(this.origin.arr.end[i] - this.origin.arr.start[i])

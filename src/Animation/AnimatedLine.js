@@ -38,8 +38,23 @@ const animatedLine = new S.AnimatedLine(new S.AnimatedLine({
     ease: 'linear',
     callback: false
 })
+
+animatedLine.play({
+    duration: 500,
+    ease: 'Power4InOut',
+    callback: myCallback
+})
+
 animatedLine.play()
+
 animatedLine.reverse()
+
+animatedLine.reverse({
+    duration: 500,
+    ease: 'Power4InOut',
+    callback: myCallback
+})
+
 animatedLine.pause()
 
 ELEMENT WITH LENGTH
@@ -77,9 +92,9 @@ S.AnimatedLine = function (opts) {
 
 S.AnimatedLine.prototype = {
 
-    play: function () {
+    play: function (opts) {
         for (var i = 0; i < this.elL; i++) {
-            this.merom[i].play()
+            this.merom[i].play(opts)
         }
     },
 
@@ -89,9 +104,9 @@ S.AnimatedLine.prototype = {
         }
     },
 
-    reverse: function () {
+    reverse: function (opts) {
         for (var i = 0; i < this.elL; i++) {
-            this.merom[i].reverse()
+            this.merom[i].reverse(opts)
         }
     },
 

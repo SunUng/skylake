@@ -17,11 +17,9 @@ tl.reverse([
         newEnd: 100,
         duration: 1000,
         ease: 'Power4Out',
-        opts: {
-            delay: 1000,
-            callbackDelay: 500,
-            callback: myCallback
-        }
+        delay: 1000,
+        callbackDelay: 500,
+        callback: myCallback
     }
 ])
 
