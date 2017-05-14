@@ -5,7 +5,8 @@
 const morphAnimation = new S.Morph({
     type: 'polygon',
     element: '.polygon',
-    newCoords: '50.2,12.8 63,0 63,4.1 63,7 63,10 63,13.1 63,17',
+    start: '50.2,12.8 63,0 63,4.1 63,7 63,10 63,13.1 63,17',
+    end: '50.2,12.8 63,0 63,4.1 63,7 63,10 63,13.1 63,17',
     duration: 1100,
     ease: 'Power4InOut',
     delay: 700,
@@ -31,8 +32,8 @@ S.Morph = function (opts) {
     this.round = 1000
 
     this.origin = {
-        start: this.el[0].getAttribute(this.type),
-        end: opts.newCoords
+        start: opts.start || this.el[0].getAttribute(this.type),
+        end: opts.end
     }
     this.origin.arr = {
         start: this.getArr(this.origin.start),
