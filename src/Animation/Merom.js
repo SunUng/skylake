@@ -122,6 +122,7 @@ S.Merom.prototype = {
         this.duration = Math.abs(delta) * this.coeff
 
         if (opts) {
+            this.start = opts.newStart || this.start
             this.end = opts.newEnd || this.end
             this.duration = opts.duration || this.duration
             this.ease = opts.ease || this.ease
@@ -179,6 +180,8 @@ S.Merom.prototype = {
             case '3dx':
             case '3dy':
             case 'scale':
+            case 'scaleX':
+            case 'scaleY':
             case 'rotate':
             case 'rotateX':
             case 'rotateY':
@@ -205,8 +208,8 @@ S.Merom.prototype = {
                 t3dy = val[i] + this.unitY
             } else if (this.prop[i].substring(0, 6) === 'rotate') {
                 rotate = this.prop[i] + '(' + val[i] + 'deg)'
-            } else if (this.prop[i] === 'scale') {
-                scale = 'scale(' + val[i] + ')'
+            } else {
+                scale = this.prop[i] + '(' + val[i] + ')'
             }
         }
 
@@ -225,7 +228,7 @@ S.Merom.prototype = {
         } else if (this.prop.substring(0, 6) === 'rotate') {
             transformValue = this.prop + '(' + val + 'deg)'
         } else {
-            transformValue = 'scale(' + val + ')'
+            transformValue = this.prop + '(' + val + ')'
         }
 
         this.updateDom('t', transformValue)
