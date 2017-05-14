@@ -8,6 +8,7 @@ const srcArr = [
     'src/Animation/Timeline.js',
     'src/Core/BindMaker.js',
     'src/Core/EasePack.js',
+    'src/Core/EaseCSS.js',
     'src/Core/Is.js',
     'src/Core/Lerp.js',
     'src/Core/Sniffer.js',

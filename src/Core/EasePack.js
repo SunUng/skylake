@@ -1,6 +1,6 @@
 /*
 
-easeMultiplier = S.EasePack['linear'](multiplier)
+const easeMultiplier = S.EasePack['linear'](multiplier)
 
 */
 

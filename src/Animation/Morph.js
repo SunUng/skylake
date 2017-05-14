@@ -55,7 +55,12 @@ S.Morph = function (opts) {
 
     this.curr = this.origin.start
 
-    this.easePack = S.EasePack
+    if (S.Is.string(this.ease)) {
+        this.easeCalc = S.EasePack[this.ease]
+    } else {
+        const ease = S.EaseCSS(this.ease[0], this.ease[1], this.ease[2], this.ease[3])
+        this.easeCalc = ease
+    }
 
     this.raf = new S.RafIndex()
 
@@ -100,7 +105,7 @@ S.Morph.prototype = {
         if (this.isPaused) return
 
         var multiplier = Math.min((Date.now() - this.startTime) / this.duration, 1)
-        var easeMultiplier = this.easePack[this.ease](multiplier)
+        var easeMultiplier = this.easeCalc(multiplier)
 
         var isLetterArr = []
         var val = []

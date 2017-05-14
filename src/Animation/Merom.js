@@ -82,7 +82,13 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
     this.update = this.noMultiT ? this.singleUp() : this.multiT
     this.coeff = this.duration / Math.abs(delta)
 
-    this.easePack = S.EasePack
+    if (S.Is.string(this.ease)) {
+        this.easeCalc = S.EasePack[this.ease]
+    } else {
+        const ease = S.EaseCSS(this.ease[0], this.ease[1], this.ease[2], this.ease[3])
+        this.easeCalc = ease
+    }
+
     this.raf = new S.RafIndex()
 
     this.curr = this.origin.start
@@ -146,7 +152,7 @@ S.Merom.prototype = {
         if (this.isPaused) return
 
         var multiplier = Math.min((Date.now() - this.startTime) / this.duration, 1)
-        var easeMultiplier = this.easePack[this.ease](multiplier)
+        var easeMultiplier = this.easeCalc(multiplier)
 
         if (this.noMultiT) {
             this.curr = this.lerp(+this.start, +this.end, easeMultiplier)
