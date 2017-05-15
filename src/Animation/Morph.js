@@ -1,5 +1,6 @@
 /*
 
+►►► Start : optional
 ►►► Type : 'polygon' or 'path'
 
 const morphAnimation = new S.Morph({
@@ -24,6 +25,7 @@ S.Morph = function (opts) {
     this.type = opts.type === 'polygon' ? 'points' : 'd'
     this.el = S.Selector.el(opts.element)
     this.elL = this.el.length
+    this.start = opts.start
     this.ease = opts.ease
     this.duration = opts.duration
     this.delay = opts.delay || 0
@@ -32,7 +34,7 @@ S.Morph = function (opts) {
     this.round = 1000
 
     this.origin = {
-        start: opts.start || this.el[0].getAttribute(this.type),
+        start: this.start || this.el[0].getAttribute(this.type),
         end: opts.end
     }
     this.origin.arr = {
@@ -92,6 +94,7 @@ S.Morph.prototype = {
         this.end = this.origin[param]
         this.endArr = this.origin.arr[param]
 
+        this.curr = this.start || this.curr
         this.startArr = this.getArr(this.curr)
         this.duration = Math.abs(this.endArr[this.no] - this.startArr[this.no]) * this.coeff
     },
