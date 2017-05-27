@@ -31,7 +31,7 @@ EXPLOITATION JS
 
 ►►►  shape (circle, path)    →   '#id' or '.class' or domElement
 
-const animatedLine = new S.AnimatedLine(new S.AnimatedLine({
+const animatedLine = new S.AnimatedLine({
     el: '.shape',
     elWithLength: this.lEl, // optional
     duration: 1000,
@@ -39,23 +39,23 @@ const animatedLine = new S.AnimatedLine(new S.AnimatedLine({
     callback: false
 })
 
+animatedLine.play()
+
+animatedLine.reverse()
+
+animatedLine.pause()
+
 animatedLine.play({
     duration: 500,
     ease: 'Power4InOut',
     callback: myCallback
 })
 
-animatedLine.play()
-
-animatedLine.reverse()
-
 animatedLine.reverse({
     duration: 500,
     ease: 'Power4InOut',
     callback: myCallback
 })
-
-animatedLine.pause()
 
 ELEMENT WITH LENGTH
 ───────────────────
