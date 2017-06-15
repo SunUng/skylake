@@ -10,7 +10,7 @@ S.Sniffer = {
     uA: navigator.userAgent.toLowerCase(),
 
     get isAndroid () {
-        const isDroidPhone = /android.*mobile/.test(this.uA)
+        var isDroidPhone = /android.*mobile/.test(this.uA)
         return isDroidPhone || !isDroidPhone && /android/i.test(this.uA)
     },
 

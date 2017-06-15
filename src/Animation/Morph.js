@@ -61,7 +61,7 @@ S.Morph = function (opts) {
     if (S.Is.string(this.ease)) {
         this.easeCalc = S.EasePack[this.ease]
     } else {
-        const ease = S.EaseCSS(this.ease[0], this.ease[1], this.ease[2], this.ease[3])
+        var ease = S.EaseCSS(this.ease[0], this.ease[1], this.ease[2], this.ease[3])
         this.easeCalc = ease
     }
 

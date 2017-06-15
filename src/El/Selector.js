@@ -10,7 +10,7 @@ S.Selector = {
     el: function (s) {
         var el = []
         if (S.Is.string(s)) {
-            const elementName = s.substring(1)
+            var elementName = s.substring(1)
             if (s.charAt(0) === '#') {
                 el[0] = S.Geb.id(elementName)
             } else {

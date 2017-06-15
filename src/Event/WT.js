@@ -51,7 +51,7 @@ S.WT.prototype = {
     },
 
     run: function () {
-        const eType = this.e.type
+        var eType = this.e.type
 
         if (eType === 'wheel') {
             this.onWheel()

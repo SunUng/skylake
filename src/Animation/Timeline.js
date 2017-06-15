@@ -68,7 +68,7 @@ S.Timeline.prototype = {
 
     reverse: function (opts) {
         for (var i = 0; i < this.contentL(); i++) {
-            const opt = !opts ? undefined : opts[i]
+            var opt = !opts ? undefined : opts[i]
             this.content[i].reverse(opt)
         }
     }
