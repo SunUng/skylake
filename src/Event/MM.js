@@ -17,7 +17,7 @@ function callback (posX, posY) {
 
 */
 
-S.MM = function (opts) {
+S.MM = function (options) {
     this.opts = options
     this.cb = this.opts.callback
 
