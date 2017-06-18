@@ -1,6 +1,12 @@
 /*
 
-const MM = new S.MM(callback)
+const MM = new S.MM({
+    callback: callback,
+    throttle: {
+        delay: 40,
+        onlyAtEnd: false
+    }
+})
 
 MM.on()
 MM.off()
@@ -11,14 +17,21 @@ function callback (posX, posY) {
 
 */
 
-S.MM = function (cb) {
-    this.cb = cb
+S.MM = function (opts) {
+    this.opts = options
+    this.cb = this.opts.callback
+
     this.posX = 0
     this.posY = 0
 
-    this.rafTicking = new S.RafTicking()
+    S.BindMaker(this, ['getThrottle', 'getRAF', 'run'])
 
-    S.BindMaker(this, ['getRAF', 'run'])
+    this.throttle = new S.Throttle({
+        callback: this.getRAF,
+        delay: this.opts.throttle.delay,
+        onlyAtEnd: this.opts.throttle.onlyAtEnd
+    })
+    this.rafTicking = new S.RafTicking()
 }
 
 S.MM.prototype = {
@@ -32,7 +45,11 @@ S.MM.prototype = {
     },
 
     listeners: function (action) {
-        S.Listen(document, action, 'mousemove', this.getRAF)
+        S.Listen(document, action, 'mousemove', this.getThrottle)
+    },
+
+    getThrottle: function () {
+        this.throttle.init()
     },
 
     getRAF: function (e) {
