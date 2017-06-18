@@ -21,9 +21,6 @@ S.MM = function (opts) {
     this.opts = options
     this.cb = this.opts.callback
 
-    this.posX = 0
-    this.posY = 0
-
     S.BindMaker(this, ['getThrottle', 'getRAF', 'run'])
 
     this.throttle = new S.Throttle({
@@ -59,10 +56,10 @@ S.MM.prototype = {
     },
 
     run: function () {
-        this.posX = this.e.pageX
-        this.posY = this.e.pageY
+        const posX = this.e.pageX
+        const posY = this.e.pageY
 
-        this.cb(this.posX, this.posY)
+        this.cb(posX, posY)
     }
 
 }
