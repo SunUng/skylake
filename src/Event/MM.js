@@ -45,13 +45,13 @@ S.MM.prototype = {
         S.Listen(document, action, 'mousemove', this.getThrottle)
     },
 
-    getThrottle: function () {
+    getThrottle: function (e) {
+        this.e = e
+
         this.throttle.init()
     },
 
     getRAF: function (e) {
-        this.e = e
-
         this.rafTicking.start(this.run)
     },
 
