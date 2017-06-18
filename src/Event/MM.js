@@ -56,8 +56,8 @@ S.MM.prototype = {
     },
 
     run: function () {
-        const posX = this.e.pageX
-        const posY = this.e.pageY
+        var posX = this.e.pageX
+        var posY = this.e.pageY
 
         this.cb(posX, posY)
     }
