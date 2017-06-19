@@ -1,6 +1,9 @@
 /*
 
+►►►  element is optional
+
 const MM = new S.MM({
+    element: 'div'
     callback: callback,
     throttle: {
         delay: 40,
@@ -19,6 +22,7 @@ function callback (posX, posY) {
 
 S.MM = function (options) {
     this.opts = options
+    this.el = S.Selector.el(this.opts.element)[0] || document
     this.cb = this.opts.callback
 
     S.BindMaker(this, ['getThrottle', 'getRAF', 'run'])
@@ -42,7 +46,7 @@ S.MM.prototype = {
     },
 
     listeners: function (action) {
-        S.Listen(document, action, 'mousemove', this.getThrottle)
+        S.Listen(this.el, action, 'mousemove', this.getThrottle)
     },
 
     getThrottle: function (e) {
