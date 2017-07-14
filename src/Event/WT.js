@@ -1,11 +1,13 @@
 /*
 
-const WT = new S.WT(callback)
+S.BindMaker(this, ['wtCb'])
 
-WT.on()
-WT.off()
+this.WT = new S.WT(this.wtCb)
 
-function callback (delta, type, event) {
+this.WT.on()
+this.WT.off()
+
+wtCb (delta, type, event) {
 
 }
 

@@ -1,17 +1,19 @@
 /*
 
-const scroll = new S.Scroll({
-    callback: callback,
+S.BindMaker(this, ['scrollCb'])
+
+this.scroll = new S.Scroll({
+    callback: this.scrollCb,
     throttle: {
         delay: 40,
         onlyAtEnd: false
     }
 })
 
-scroll.on()
-scroll.off()
+this.scroll.on()
+this.scroll.off()
 
-function callback (currentScrollY, delta) {
+scrollCb (currentScrollY, delta) {
 
 }
 

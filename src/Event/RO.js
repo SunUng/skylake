@@ -1,15 +1,21 @@
 /*
 
-const RO = new S.RO({
-    callback: callback,
+S.BindMaker(this, ['resize'])
+
+this.RO = new S.RO({
+    callback: this.resize,
     throttle: {
         delay: 100,
         onlyAtEnd: true
     }
 })
 
-RO.on()
-RO.off()
+this.RO.on()
+this.RO.off()
+
+resize () {
+
+}
 
 */
 

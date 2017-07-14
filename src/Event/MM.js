@@ -2,19 +2,21 @@
 
 ►►►  element is optional
 
-const MM = new S.MM({
-    element: 'div'
-    callback: callback,
+S.BindMaker(this, ['mmCb'])
+
+this.MM = new S.MM({
+    element: '#element',
+    callback: this.mmCb,
     throttle: {
         delay: 40,
         onlyAtEnd: false
     }
 })
 
-MM.on()
-MM.off()
+this.MM.on()
+this.MM.off()
 
-function callback (posX, posY) {
+mmCb (posX, posY) {
 
 }
 
