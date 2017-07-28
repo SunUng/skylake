@@ -1,5 +1,7 @@
 /*
 
+►►►  firstTime for window resizer
+
 const throttle = new S.Throttle({
     callback: callback,
     delay: 200
@@ -21,8 +23,10 @@ S.Throttle = function (opts) {
 S.Throttle.prototype = {
     init: function () {
         var self = this
+        var firstTime = true
         var now = Date.now()
-        if (this.last && now < this.last + this.delay) {
+        if ((this.last && now < this.last + this.delay) || firstTime) {
+            firstTime = false
             clearTimeout(this.timer)
             this.timer = setTimeout(function () {
                 self.last = now
@@ -31,6 +35,7 @@ S.Throttle.prototype = {
         } else {
             this.last = now
             if (!this.onlyAtEnd) {
+                firstTime = false
                 this.cb()
             }
         }
