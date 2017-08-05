@@ -193,11 +193,15 @@ S.Merom.prototype = {
             case 'rotateY':
                 return this.singleT
                 break
+            case 'gtx':
+            case 'gty':
+                return this.gradientT
+                break
             case 'scrollTop':
-                return this.setScrollTop
+                return this.scrollTop
                 break
             default:
-                return this.setStyle
+                return this.setOthers
         }
     },
 
@@ -240,11 +244,16 @@ S.Merom.prototype = {
         this.updateDom('t', transformValue)
     },
 
-    setScrollTop: function (val) {
+    gradientT: function (val) {
+        var gt = this.prop === 'gtx' ? val + ',0' : '0,' + val
+        this.updateDom('gradientTransform', 'translate(' + gt + ')')
+    },
+
+    scrollTop: function (val) {
         this.el[0][this.prop] = val
     },
 
-    setStyle: function (val) {
+    setOthers: function (val) {
         this.updateDom(this.prop, val)
     },
 
@@ -253,7 +262,7 @@ S.Merom.prototype = {
             if (prop === 't') {
                 this.el[i].style.webkitTransform = val
                 this.el[i].style.transform = val
-            } else if (prop === 'x' || prop === 'y' || prop === 'r') {
+            } else if (prop === 'x' || prop === 'y' || prop === 'r' || prop === 'gradientTransform') {
                 this.el[i].setAttribute(prop, val)
             } else {
                 this.el[i].style[prop] = val + this.unit

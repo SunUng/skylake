@@ -111,13 +111,11 @@ S.Morph.prototype = {
         var multiplier = Math.min((Date.now() - this.startTime) / this.duration, 1)
         var easeMultiplier = this.easeCalc(multiplier)
 
-        var isLetterArr = []
         var val = []
         var curr = ''
 
         for (var i = 0; i < this.qty; i++) {
-            isLetterArr[i] = this.isLetter(this.startArr[i])
-            val[i] = isLetterArr[i] ? this.startArr[i] : Math.round(S.Lerp.init(+this.startArr[i], +this.endArr[i], easeMultiplier) * this.round) / this.round
+            val[i] = this.isLetter(this.startArr[i]) ? this.startArr[i] : Math.round(S.Lerp.init(+this.startArr[i], +this.endArr[i], easeMultiplier) * this.round) / this.round
             curr += val[i] + ' '
             this.curr = curr.trim()
         }
