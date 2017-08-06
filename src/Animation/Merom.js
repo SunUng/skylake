@@ -71,12 +71,11 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
             }
         }
         // To combat cases where start = end → delta is null so duration is null
+        this.no = 0
         for (var i = 0; i < this.qty; i++) {
             if (this.origin.start[i] !== this.origin.end[i]) {
                 this.no = i
                 break
-            } else {
-                this.no = 0
             }
         }
         delta = this.origin.end[this.no] - this.origin.start[this.no]
@@ -146,19 +145,15 @@ S.Merom.prototype = {
     },
 
     getRaf: function () {
-        if (this.duration === 0) {
-            this.getCb()
-        } else {
-            this.isPaused = false
-            this.startTime = Date.now()
-            this.raf.start(this.loop)
-        }
+        this.isPaused = false
+        this.startTime = Date.now()
+        this.raf.start(this.loop)
     },
 
     loop: function () {
         if (this.isPaused) return
 
-        var multiplier = Math.min((Date.now() - this.startTime) / this.duration, 1)
+        var multiplier = this.duration === 0 ? 1 : Math.min((Date.now() - this.startTime) / this.duration, 1)
         var easeMultiplier = this.easeCalc(multiplier)
 
         if (this.noMultiT) {
@@ -178,7 +173,9 @@ S.Merom.prototype = {
             this.needEnd = false
             this.raf.cancel()
             this.update(this.end)
-            this.getCb()
+            if (this.cb) {
+                setTimeout(this.cb, this.callbackDelay)
+            }
         }
     },
 
@@ -277,12 +274,6 @@ S.Merom.prototype = {
 
     getUnit: function (valueToCheck) {
         return S.Is.string(valueToCheck) ? 'px' : '%'
-    },
-
-    getCb: function () {
-        if (this.cb) {
-            setTimeout(this.cb, this.callbackDelay)
-        }
     }
 
 }

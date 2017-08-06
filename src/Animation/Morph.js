@@ -99,19 +99,15 @@ S.Morph.prototype = {
     },
 
     getRaf: function () {
-        if (this.duration === 0) {
-            this.getCb()
-        } else {
-            this.isPaused = false
-            this.startTime = Date.now()
-            this.raf.start(this.loop)
-        }
+        this.isPaused = false
+        this.startTime = Date.now()
+        this.raf.start(this.loop)
     },
 
     loop: function () {
         if (this.isPaused) return
 
-        var multiplier = Math.min((Date.now() - this.startTime) / this.duration, 1)
+        var multiplier = this.duration === 0 ? 1 : Math.min((Date.now() - this.startTime) / this.duration, 1)
         var easeMultiplier = this.easeCalc(multiplier)
 
         var val = []
@@ -130,7 +126,9 @@ S.Morph.prototype = {
         } else {
             this.raf.cancel()
             this.updateDom(this.end)
-            this.getCb()
+            if (this.cb) {
+                setTimeout(this.cb, this.cbDelay)
+            }
         }
     },
 
@@ -154,12 +152,6 @@ S.Morph.prototype = {
 
     isLetter: function (val) {
         return (val === 'M' || val === 'L' || val === 'C' || val === 'Z')
-    },
-
-    getCb: function () {
-        if (this.cb) {
-            setTimeout(this.cb, this.cbDelay)
-        }
     }
 
 }
