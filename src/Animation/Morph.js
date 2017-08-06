@@ -94,15 +94,18 @@ S.Morph.prototype = {
         this.end = this.origin[param]
         this.endArr = this.origin.arr[param]
 
-        this.curr = this.start || this.curr
         this.startArr = this.getArr(this.curr)
         this.duration = Math.abs(this.endArr[this.no] - this.startArr[this.no]) * this.coeff
     },
 
     getRaf: function () {
-        this.isPaused = false
-        this.startTime = Date.now()
-        this.raf.start(this.loop)
+        if (this.duration === 0) {
+            this.getCb()
+        } else {
+            this.isPaused = false
+            this.startTime = Date.now()
+            this.raf.start(this.loop)
+        }
     },
 
     loop: function () {

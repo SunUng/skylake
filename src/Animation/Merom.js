@@ -75,6 +75,8 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
             if (this.origin.start[i] !== this.origin.end[i]) {
                 this.no = i
                 break
+            } else {
+                this.no = 0
             }
         }
         delta = this.origin.end[this.no] - this.origin.start[this.no]
@@ -119,12 +121,13 @@ S.Merom.prototype = {
 
         this.needEnd = true
 
-        var param = from === 1 ? 'start' : 'end'
-        this.end = this.origin[param]
+        var endParam = from === 1 ? 'start' : 'end'
+        this.end = this.origin[endParam]
 
+        var startParam = from === 1 ? 'end' : 'start'
         this.start = this.curr
 
-        var delta = this.noMultiT ? this.end - this.start : this.end[this.no] - this.start[this.no]
+        var delta = this.noMultiT ? (this.end - this.start) : (this.end[this.no] - this.start[this.no])
         this.duration = Math.abs(delta) * this.coeff
 
         if (opts) {
@@ -143,9 +146,13 @@ S.Merom.prototype = {
     },
 
     getRaf: function () {
-        this.isPaused = false
-        this.startTime = Date.now()
-        this.raf.start(this.loop)
+        if (this.duration === 0) {
+            this.getCb()
+        } else {
+            this.isPaused = false
+            this.startTime = Date.now()
+            this.raf.start(this.loop)
+        }
     },
 
     loop: function () {
@@ -171,9 +178,7 @@ S.Merom.prototype = {
             this.needEnd = false
             this.raf.cancel()
             this.update(this.end)
-            if (this.cb) {
-                setTimeout(this.cb, this.callbackDelay)
-            }
+            this.getCb()
         }
     },
 
@@ -272,6 +277,12 @@ S.Merom.prototype = {
 
     getUnit: function (valueToCheck) {
         return S.Is.string(valueToCheck) ? 'px' : '%'
+    },
+
+    getCb: function () {
+        if (this.cb) {
+            setTimeout(this.cb, this.callbackDelay)
+        }
     }
 
 }
