@@ -49,7 +49,7 @@ S.MM.prototype = {
     },
 
     listeners: function (action) {
-        const e = this.iT ? 'touch' : 'mouse'
+        var e = this.iT ? 'touch' : 'mouse'
         S.Listen(this.el, action, e + 'move', this.getThrottle)
     },
 
