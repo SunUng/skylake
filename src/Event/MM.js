@@ -49,8 +49,8 @@ S.MM.prototype = {
     },
 
     listeners: function (action) {
-        var e = this.iT ? 'touch' : 'mouse'
-        S.Listen(this.el, action, e + 'move', this.getThrottle)
+        var type = this.iT ? 'touch' : 'mouse'
+        S.Listen(this.el, action, type + 'move', this.getThrottle)
     },
 
     getThrottle: function (e) {
@@ -59,15 +59,14 @@ S.MM.prototype = {
         this.throttle.init()
     },
 
-    getRAF: function (e) {
+    getRAF: function () {
         this.rafTicking.start(this.run)
     },
 
     run: function () {
-        var posX = this.e.pageX
-        var posY = this.e.pageY
+        var t = this.iT ? this.e.changedTouches[0] : this.e
 
-        this.cb(posX, posY)
+        this.cb(t['pageX'], t['pageY'])
     }
 
 }
