@@ -17,7 +17,7 @@ type → 'scroll' or 'touch'
 
 S.WT = function (cb) {
     this.cb = cb
-    this.isTouch = S.Sniffer.isTouch
+    this.iT = S.Sniffer.isTouch
 
     this.rafTicking = new S.RafTicking()
 
@@ -36,7 +36,7 @@ S.WT.prototype = {
 
     listeners: function (action) {
         var d = document
-        if (this.isTouch) {
+        if (this.iT) {
             S.Listen(d, action, 'touchstart', this.touchStart)
             S.Listen(d, action, 'touchmove', this.getRAF)
         } else {

@@ -26,6 +26,7 @@ S.MM = function (options) {
     this.opts = options
     this.el = S.Selector.el(this.opts.element)[0] || document
     this.cb = this.opts.callback
+    this.iT = S.Sniffer.isTouch
 
     S.BindMaker(this, ['getThrottle', 'getRAF', 'run'])
 
@@ -48,7 +49,8 @@ S.MM.prototype = {
     },
 
     listeners: function (action) {
-        S.Listen(this.el, action, 'mousemove', this.getThrottle)
+        const e = this.iT ? 'touch' : 'mouse'
+        S.Listen(this.el, action, e + 'move', this.getThrottle)
     },
 
     getThrottle: function (e) {
