@@ -66,6 +66,19 @@ When the starting size is different from the end
 
 Ex : A morphing at the same time
 
+ANIMATED DASHED LINE
+────────────────────
+
+►►►  need to be the same for all elements
+
+const dahsedLineAnimation = new S.AnimatedLine({
+    el: element,
+    duration: 1500,
+    ease: 'ExpoInOut',
+    dashed: '1,4',
+    callback: false
+})
+
 */
 
 S.AnimatedLine = function (opts) {
@@ -74,6 +87,7 @@ S.AnimatedLine = function (opts) {
     this.elWL = opts.elWithLength
     this.duration = opts.duration
     this.ease = opts.ease
+    this.dashed = opts.dashed || false
 
     this.shapeLength = []
     this.cb = []
@@ -83,7 +97,19 @@ S.AnimatedLine = function (opts) {
         this.shapeLength[i] = this.getShapeLength(this.el[i])
         this.cb[i] = i === this.elL - 1 ? opts.callback : false
 
-        this.el[i].style.strokeDasharray = this.shapeLength[i]
+        if (this.dashed) {
+            var dashLength = this.dashed.split(/[\s,]/).map(function (a) {
+                return parseFloat(a) || 0
+            }).reduce(function (a, b) {
+                return a + b
+            })
+            var dashCount = this.shapeLength[i] / dashLength + 1
+            var a = new Array(Math.ceil(dashCount)).join(this.dashed + ' ')
+            this.el[i].style.strokeDasharray = a + '0' + ' ' + this.shapeLength[i]
+        } else {
+            this.el[i].style.strokeDasharray = this.shapeLength[i]
+        }
+
         this.el[i].style.opacity = 1
 
         this.merom[i] = new S.Merom(this.el[i], 'strokeDashoffset', this.shapeLength[i], 0, this.duration, this.ease, {callback: this.cb[i]})
