@@ -98,13 +98,18 @@ S.AnimatedLine = function (opts) {
         this.cb[i] = i === this.elL - 1 ? opts.callback : false
 
         if (this.dashed) {
-            var dashLength = this.dashed.split(/[\s,]/).map(function (a) {
-                return parseFloat(a) || 0
-            }).reduce(function (a, b) {
-                return a + b
-            })
-            var dashCount = this.shapeLength[i] / dashLength + 1
-            var a = new Array(Math.ceil(dashCount)).join(this.dashed + ' ')
+            var dashL = 0
+            var dashArr = this.dashed.split(/[\s,]/)
+            var dashArrL = dashArr.length
+            for (var j = 0; j < dashArrL; j++) {
+                dashL += parseFloat(dashArr[j]) || 0
+            }
+            var a = ''
+            var dashCount = Math.ceil(this.shapeLength[i] / dashL)
+            for (var j = 0; j < dashCount; j++) {
+                a += this.dashed + ' '
+            }
+
             this.el[i].style.strokeDasharray = a + '0' + ' ' + this.shapeLength[i]
         } else {
             this.el[i].style.strokeDasharray = this.shapeLength[i]
@@ -140,6 +145,12 @@ S.AnimatedLine.prototype = {
         if (el.tagName === 'circle') {
             var radius = el.getAttribute('r')
             return 2 * radius * Math.PI
+        } else if (el.tagName === 'line') {
+            var x1 = el.getAttribute('x1')
+            var x2 = el.getAttribute('x2')
+            var y1 = el.getAttribute('y1')
+            var y2 = el.getAttribute('y2')
+            return Math.sqrt((x2 -= x1) * x2 + (y2 -= y1) * y2)
         } else {
             var el = this.elWL || el
             return el.getTotalLength()
