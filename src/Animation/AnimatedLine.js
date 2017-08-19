@@ -109,13 +109,10 @@ S.AnimatedLine = function (opts) {
             for (var j = 0; j < dashCount; j++) {
                 a += this.dashed + ' '
             }
-
             this.el[i].style.strokeDasharray = a + '0' + ' ' + this.shapeLength[i]
         } else {
             this.el[i].style.strokeDasharray = this.shapeLength[i]
         }
-
-        this.el[i].style.opacity = 1
 
         this.merom[i] = new S.Merom(this.el[i], 'strokeDashoffset', this.shapeLength[i], 0, this.duration, this.ease, {callback: this.cb[i]})
     }
@@ -125,6 +122,7 @@ S.AnimatedLine.prototype = {
 
     play: function (opts) {
         for (var i = 0; i < this.elL; i++) {
+            this.el[i].style.opacity = 1
             this.merom[i].play(opts)
         }
     },
