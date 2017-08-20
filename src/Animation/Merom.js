@@ -83,13 +83,6 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
     this.update = this.noMultiT ? this.singleUp() : this.multiT
     this.coeff = this.duration / Math.abs(delta)
 
-    if (S.Is.string(this.ease)) {
-        this.easeCalc = S.EasePack[this.ease]
-    } else {
-        var ease = S.EaseCSS(this.ease[0], this.ease[1], this.ease[2], this.ease[3])
-        this.easeCalc = ease
-    }
-
     this.raf = new S.RafIndex()
 
     this.curr = this.origin.start
@@ -142,6 +135,8 @@ S.Merom.prototype = {
             this.delay = 0
             this.callbackDelay = 0
         }
+
+        this.easeCalc = S.Is.string(this.ease) ? S.EasePack[this.ease] : this.easeCalc = S.EaseCSS(this.ease[0], this.ease[1], this.ease[2], this.ease[3])
     },
 
     getRaf: function () {
