@@ -85,7 +85,6 @@ S.Merom = function (element, prop, start, end, duration, ease, opts) {
 
     this.raf = new S.RafIndex()
 
-    this.startTime = 0
     this.curr = this.origin.start
 
     S.BindMaker(this, ['getRaf', 'loop'])
@@ -142,6 +141,7 @@ S.Merom.prototype = {
 
     getRaf: function () {
         this.isPaused = false
+        this.startTime = 0
         this.raf.start(this.loop)
     },
 
