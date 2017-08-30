@@ -56,6 +56,7 @@ S.Morph = function (opts) {
         }
     }
 
+    this.startTime = 0
     this.curr = this.origin.start
 
     if (S.Is.string(this.ease)) {
@@ -100,14 +101,14 @@ S.Morph.prototype = {
 
     getRaf: function () {
         this.isPaused = false
-        this.startTime = Date.now()
         this.raf.start(this.loop)
     },
 
-    loop: function () {
+    loop: function (now) {
         if (this.isPaused) return
 
-        var multiplier = this.duration === 0 ? 1 : Math.min((Date.now() - this.startTime) / this.duration, 1)
+        if (!this.startTime) this.startTime = now
+        var multiplier = this.duration === 0 ? 1 : Math.min((now - this.startTime) / this.duration, 1)
         var easeMultiplier = this.easeCalc(multiplier)
 
         var val = []
