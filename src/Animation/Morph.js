@@ -56,7 +56,6 @@ S.Morph = function (opts) {
         }
     }
 
-    this.startTime = 0
     this.curr = this.origin.start
 
     if (S.Is.string(this.ease)) {
