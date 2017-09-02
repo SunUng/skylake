@@ -139,6 +139,10 @@ S.Morph.prototype = {
         }
     },
 
+    setCurr: function (curr) {
+        this.curr = curr
+    },
+
     getArr: function (coords) {
         var coordsSplit = coords.split(' ')
         var coordsArr = []
