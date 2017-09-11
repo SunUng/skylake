@@ -13,7 +13,9 @@ S.ScrollTo(options)
 
 S.ScrollTo = function (options) {
     var opts = options
-    var scrollable = S.Sniffer.isFirefox || S.Sniffer.isIE ? document.documentElement : S.Dom.body
+    var d = document
+    var scrollNode = d.scrollingElement ? d.scrollingElement : S.Dom.body
+    var scrollable = S.Sniffer.isFirefox || S.Sniffer.isIE ? d.documentElement : scrollNode
     var initialPosition = S.Win.pageY
     var animation = new S.Merom(scrollable, 'scrollTop', initialPosition, opts.destination, opts.duration, opts.ease, {callback: getCb})
 
