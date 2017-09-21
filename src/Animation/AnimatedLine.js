@@ -79,6 +79,21 @@ const dahsedLineAnimation = new S.AnimatedLine({
     callback: false
 })
 
+START & END
+───────────
+
+►►►  percentage
+►►►  default → start: 0 & end: 100
+
+const lineAnimation = new S.AnimatedLine({
+    el: element,
+    start: '0',
+    end: '25',
+    duration: 1500,
+    ease: 'ExpoInOut',
+    callback: false
+})
+
 */
 
 S.AnimatedLine = function (opts) {
@@ -88,7 +103,13 @@ S.AnimatedLine = function (opts) {
     this.duration = opts.duration
     this.ease = opts.ease
     this.dashed = opts.dashed || false
+    this.start = opts.start || 0
+    this.end = opts.end || 100
 
+    this.startCoeff = (100 - +this.start) / 100
+    this.endCoeff = (100 - +this.end) / 100
+    this.startArr = []
+    this.endArr = []
     this.shapeLength = []
     this.cb = []
     this.merom = []
@@ -114,7 +135,10 @@ S.AnimatedLine = function (opts) {
             this.el[i].style.strokeDasharray = this.shapeLength[i]
         }
 
-        this.merom[i] = new S.Merom(this.el[i], 'strokeDashoffset', this.shapeLength[i], 0, this.duration, this.ease, {callback: this.cb[i]})
+        this.startArr[i] = this.startCoeff * this.shapeLength[i]
+        this.endArr[i] = this.endCoeff * this.shapeLength[i]
+
+        this.merom[i] = new S.Merom(this.el[i], 'strokeDashoffset', this.startArr[i], this.endArr[i], this.duration, this.ease, {callback: this.cb[i]})
     }
 }
 
