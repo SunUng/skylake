@@ -66,7 +66,7 @@ S.MM.prototype = {
     run: function () {
         var t = this.iT ? this.e.changedTouches[0] : this.e
 
-        this.cb(t['pageX'], t['pageY'])
+        this.cb(t['pageX'], t['pageY'], this.e)
     }
 
 }
