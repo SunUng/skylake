@@ -11,7 +11,7 @@ const rl = Readline.createInterface({
 rl.question(question, version => {
     const futureVersion = isInt(version.charAt(0)) ? version : PackageJson.version
     updatePackage(futureVersion)
-    // addSignature(futureVersion)
+    addSignature(futureVersion)
     rl.close()
 })
 
@@ -58,5 +58,5 @@ function addSignature (version) {
     const buffer = new Buffer(signature)
     fs.writeSync(fd, buffer, 0, buffer.length)
     fs.writeSync(fd, data, 0, data.length)
-    fs.close(fd)
+    fs.closeSync(fd)
 }
