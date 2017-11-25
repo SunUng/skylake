@@ -4,7 +4,7 @@ A light JavaScript library.
 
 ## Installation
 
-    $ npm install --save-dev skylake
+    $ yarn add skylake --dev
 
 ## Usage
 
