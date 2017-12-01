@@ -27,11 +27,8 @@ S.Timeline.prototype = {
 
     from: function (opts) {
         if (this.contentL() > 0) {
-            var prev = this.arr[this.contentL() - 1]
-            var prevDelay = prev.delay || 0
-            opts.delay += prevDelay
+            opts.delay += this.arr[this.contentL() - 1].v.delay || 0
         }
-
         this.arr.push(new S.Merom(opts))
     },
 
