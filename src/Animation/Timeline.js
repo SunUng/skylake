@@ -4,6 +4,8 @@ this.tl = new S.Timeline()
 this.tl.from({el: '#id0', p: {x: [0, 600, 'px'], rotate: [0, 360]}, d: 5000, e: 'linear'})
 this.tl.from({el: '#id1', p: {x: [0, 600, 'px'], rotate: [0, 360]}, d: 5000, e: 'linear', delay: 300})
 
+this.tl.play()
+
 this.tl.pause()
 
 this.tl.reverse([

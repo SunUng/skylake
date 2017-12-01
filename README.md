@@ -28,16 +28,18 @@ Look at the **src** folder in the github repository for more information
 
 ### Play animations with Merom
 
-    const animation = new S.Merom('.element', '3dy', 0, 100, 1000, 'Power4InOut')
+    const animation = new S.Merom({el: '#id', p: {x: [0, 600, 'px']}, d: 2000, e: 'Power4InOut'})
     animation.play()
     animation.reverse()
 
 ### Build sequences of Merom with Timeline
 
     const tl = new S.Timeline()
-    tl.from('#element-0', '3dy', 0, 100, 1000, 'ExpoOut', {delay: 500})
-    tl.from('#element-1', 'opacity', 1, 0, 500, 'Power4In', {callback: myCallback})
+    tl.from({el: '#id0', p: {x: [0, 600, 'px'], rotate: [0, 360]}, d: 5000, e: 'linear'})
+    tl.from({el: '#id1', p: {x: [0, 600, 'px'], rotate: [0, 360]}, d: 5000, e: 'linear', delay: 300, cb: myCallback})
+
     tl.play()
+
     tl.pause()
 
 ## Author
