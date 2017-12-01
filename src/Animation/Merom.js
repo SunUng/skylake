@@ -245,14 +245,14 @@ S.Merom.prototype = {
         var t = t3d + r + s === 0 ? 0 : [t3d, r, s].filter(function (val) {return val !== 0}).join(' ')
 
         // Opacity
-        var o = S.Has(this.v.propPos, 'o') ? this.v.prop[this.v.propPos['o']].curr : 0
+        var o = S.Has(this.v.propPos, 'o') ? this.v.prop[this.v.propPos['o']].curr : -1
 
         // Dom update
         for (var i = 0; i < this.v.elL; i++) {
             if (t !== 0) {
                 this.v.el[i].style.transform = t
             }
-            if (o !== 0) {
+            if (o >= 0) {
                 this.v.el[i].style.opacity = o
             }
         }
