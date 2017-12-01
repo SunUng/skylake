@@ -17,35 +17,33 @@ this.tl.reverse([
 
 S.Timeline = function () {
     this.arr = []
-
-    this.contentL = function () {
-        return this.arr.length
-    }
+    this.arrL = 0
 }
 
 S.Timeline.prototype = {
 
     from: function (opts) {
-        if (this.contentL() > 0) {
-            opts.delay += this.arr[this.contentL() - 1].v.delay || 0
+        if (this.arrL > 0) {
+            opts.delay += this.arr[this.arrL - 1].v.delay || 0
         }
         this.arr.push(new S.Merom(opts))
+        this.arrL++
     },
 
     play: function () {
-        for (var i = 0; i < this.contentL(); i++) {
+        for (var i = 0; i < this.arrL; i++) {
             this.arr[i].play()
         }
     },
 
     pause: function () {
-        for (var i = 0; i < this.contentL(); i++) {
+        for (var i = 0; i < this.arrL; i++) {
             this.arr[i].pause()
         }
     },
 
     reverse: function (opts) {
-        for (var i = 0; i < this.contentL(); i++) {
+        for (var i = 0; i < this.arrL; i++) {
             var opt = !opts ? undefined : opts[i]
             this.arr[i].reverse(opt)
         }

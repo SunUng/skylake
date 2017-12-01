@@ -8,10 +8,6 @@ const path = S.Win.path
 var perf = performance
 
 S.Win = {
-    get now () {
-        return perf.now()
-    },
-
     get w () {
         return innerWidth
     },
