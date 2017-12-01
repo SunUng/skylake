@@ -18,38 +18,39 @@ type → 'scroll' or 'touch'
 S.WT = function (cb) {
     this.cb = cb
     this.iT = S.Sniffer.isTouch
+    this.tick = false
 
-    this.rafTicking = new S.RafTicking()
-
-    S.BindMaker(this, ['touchStart', 'getRAF', 'run'])
+    S.BindMaker(this, ['touchStart', 'getRaf', 'run'])
 }
 
 S.WT.prototype = {
 
     on: function () {
-        this.listeners('add')
+        this.listener('add')
     },
 
     off: function () {
-        this.listeners('remove')
+        this.listener('remove')
     },
 
-    listeners: function (action) {
+    listener: function (action) {
         var d = document
         if (this.iT) {
             S.Listen(d, action, 'touchstart', this.touchStart)
-            S.Listen(d, action, 'touchmove', this.getRAF)
+            S.Listen(d, action, 'touchmove', this.getRaf)
         } else {
-            S.Listen(d, action, 'mouseWheel', this.getRAF)
+            S.Listen(d, action, 'mouseWheel', this.getRaf)
         }
     },
 
-    getRAF: function (e) {
+    getRaf: function (e) {
         this.e = e
-
         this.e.preventDefault()
 
-        this.rafTicking.start(this.run)
+        if (!this.tick) {
+            this.raf = requestAnimationFrame(this.run)
+            this.tick = true
+        }
     },
 
     run: function () {
@@ -97,6 +98,7 @@ S.WT.prototype = {
 
     getCb: function () {
         this.cb(this.delta, this.type, this.e)
+        this.tick = false
     }
 
 }

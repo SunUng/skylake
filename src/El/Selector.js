@@ -7,30 +7,30 @@ const name = S.Selector.name(selector)
 */
 
 S.Selector = {
-    el: function (s) {
+    el: function (v) {
         var el = []
-        if (S.Is.string(s)) {
-            var elementName = s.substring(1)
-            if (s.charAt(0) === '#') {
-                el[0] = S.Geb.id(elementName)
+        if (S.Is.string(v)) {
+            var elName = v.substring(1)
+            if (v.charAt(0) === '#') {
+                el[0] = S.Geb.id(elName)
             } else {
-                el = S.Geb.class(elementName)
+                el = S.Geb.class(elName)
             }
         } else {
-            el[0] = s
+            el[0] = v
         }
         return el
     },
 
-    type: function (s) {
-        if (s.charAt(0) === '#') {
+    type: function (v) {
+        if (v.charAt(0) === '#') {
             return 'id'
         } else {
             return 'class'
         }
     },
 
-    name: function (s) {
-        return s.substring(1)
+    name: function (v) {
+        return v.substring(1)
     }
 }

@@ -1,275 +1,298 @@
 /*
 
-RULES
-─────
+OBJECT
+──────
 
-For 3dx & 3dy properties :
-►►►  string   →   px
-►►►  int      →   %
+el                  elements
+p                   properties
+d                   duration
+e                   ease
+delay               delay
+cb                  callback
+cbDelay             callback delay
+round               rounding of values
+update              custom function to update external things
 
-EXAMPLES
-────────
+PROPERTIES
+──────────
 
-const animation1 = new S.Merom('.class', '3dy', 0, 100, 1000, 'Power4Out')
-animation1.play()
+x                   transform3d → {x: [start, end, unit]} → unit: 'px' for pixel || % if not declared
+y
+rotate
+rotateX
+rotateY
+scale
+scaleX
+scaleY
+opacity
 
-const animation2 = new S.Merom(domElement, 'opacity', 1, 0, 1000, 'linear', {delay: 500, callbackDelay: 200, callback: myCallback})
-animation2.play()
+SVG
+───
 
-const animation3 = new S.Merom('#id', ['rotate', '3dy'], [0, '0'], [-45, '-6'], 450, 'Power4Out')
-animation3.play()
+type                'polygon' or 'path'
+start               optional
+end
 
-const animation4 = new S.Merom('.class', 'scale', '0', '145', 1000, 'Power4Out')
-animation4.play()
-animation4.reverse(opts)
+EXAMPLE TRANSLATION
+───────────────────
 
-const animation5 = new S.Merom('.class', '3dx', 1, 1.2, 700, 'Power1In')
-animation5.play()
-animation5.pause()
+this.anim = new S.Merom({el: '#id', p: {x: [0, 600, 'px']}, d: 2000, e: 'Power4Out'})
+
+this.anim.play({p: {x: {newStart: 0, newEnd: 100}}})
+
+this.anim.reverse({p: {x: {newEnd: 50}}})
+
+EXAMPLE MORPHING JS
+───────────────────
+
+this.morph = new S.Merom({
+    el: '#circle',
+    svg: {
+        type: 'polygon',
+        end: '57.2,32.8 60.6,34.7 64.3,36.9 68.5,39.3 71.1,40.8 74.2,42.6 77.6,44.6 80.9,46.5 85,48.8 88.1,50.6 91.4,52.5 94.5,54.3 97.6,56.1 100.9,58 104.5,60.1 109,62.7 113,65 109.6,67 105.9,69.1 101.7,71.5 98.9,73.1 95.4,75.2 92,77.1 89.1,78.8 85.6,80.8 82,82.9 77.6,85.5 73.4,87.8 70.3,89.7 67.2,91.5 63.6,93.5 59.7,95.8 55.9,98 52.3,100 49.5,101.7 46.7,103.3 43.8,105 41,106.6 38,108.3 38,103 38,97.3 38,92.7 38,89.2 38,85.6 38,81.7 38,77.9 38,73.2 38,68.8 38,65 38,61.1 38,56.8 38,52.4 38,47.9 38,44.3 38,39.4 38,35.2 38,30.5 38,25.7 38,21.7 41,23.5 44.6,25.5 48.4,27.7 51.4,29.4 54,30.9'
+    },
+    d: 2000,
+    e: 'Power4Out'
+})
+
+this.morph.play()
+
+this.morph.reverse()
+
+EXAMPLE MORPHING HTML
+─────────────────────
+
+<svg width="130" height="130" viewBox="0 0 130 130">
+    <polygon id="circle" points="65,0 71.7,0.3 78.2,1.4 85.6,3.3 92.6,6.1 97.1,8.5 102.3,11.8 107.1,15.5 111.1,19.2 116,24.7 119.4,29.5 122.7,35 125.2,40.4 127.5,47.2 129,53.5 129.8,59.6 130,65 129.8,70.6 128.9,76.9 127.5,82.9 125.2,89.5 122.6,95.1 119.6,100.3 115.7,105.7 111,111 106.6,115 101.7,118.6 95.8,122.2 90.1,125 83.1,127.4 76.3,129 70.6,129.8 65,130 59.6,129.8 53.1,128.9 46.7,127.4 40.4,125.2 34.5,122.4 29,119.1 23.9,115.3 19,111 13.9,105.1 10.6,100.6 7.2,94.8 4.8,89.5 2.3,82.4 1.1,76.9 0.3,71.2 0,65 0.3,58.8 1.1,53 2.9,45.8 5.8,38.1 8.3,33.2 11.3,28.3 14.7,23.8 19.1,18.9 23.8,14.7 28.8,11 34.1,7.8 39.3,5.3 46.5,2.7 53.2,1.1 58.9,0.3"/>
+</svg>
 
 */
 
-S.Merom = function (element, prop, start, end, duration, ease, opts) {
-    this.el = S.Selector.el(element)
-    this.elL = this.el.length
-    this.prop = prop
-    this.origin = {
-        start: start,
-        end: end
-    }
+S.Merom = function (opts) {
+    S.BindMaker(this, ['getRaf', 'loop', 'propUpd', 'propSvg'])
 
-    if (S.Is.object(duration)) {
-        this.duration = 0
-        this.ease = 'linear'
-        this.opts = duration
-    } else {
-        this.duration = duration || 0
-        this.ease = ease || 'linear'
-        this.opts = opts || false
-    }
-
-    this.delay = this.opts.delay || 0
-    this.callbackDelay = this.opts.callbackDelay || 0
-    this.cb = this.opts.callback
-    this.round = 1000
-    this.unit = ''
-
-    this.noMultiT = !S.Is.array(this.prop)
-    var delta
-    if (this.noMultiT) {
-        if (this.prop === '3dx' || this.prop === '3dy' || this.prop === 'height' || this.prop === 'width') {
-            this.unit = this.getUnit(this.origin.start)
-        }
-        delta = this.origin.end - this.origin.start
-    } else {
-        this.qty = this.prop.length
-        for (var i = 0; i < this.qty; i++) {
-            if (this.prop[i] === '3dx') {
-                this.unitX = this.getUnit(this.origin.start[i])
-            } else if (this.prop[i] === '3dy') {
-                this.unitY = this.getUnit(this.origin.start[i])
-            }
-        }
-        // To combat cases where start = end → delta is null so duration is null
-        this.no = 0
-        for (var i = 0; i < this.qty; i++) {
-            if (this.origin.start[i] !== this.origin.end[i]) {
-                this.no = i
-                break
-            }
-        }
-        delta = this.origin.end[this.no] - this.origin.start[this.no]
-    }
-    this.update = this.noMultiT ? this.singleUp() : this.multiT
-    this.coeff = this.duration / Math.abs(delta)
-
-    this.raf = new S.RafIndex()
-
-    this.curr = this.origin.start
-
-    S.BindMaker(this, ['getRaf', 'loop'])
+    this.v = this.varsInit(opts)
 }
 
 S.Merom.prototype = {
 
-    play: function (opts) {
-        this.init(0, opts)
+    varsInit: function (o) {
+        var v = {
+            el: S.Selector.el(o.el),
+            e: {
+                value: o.e || 'linear'
+            },
+            d: {
+                origin: o.d || 0,
+                curr: 0
+            },
+            delay: o.delay || 0,
+            cb: o.cb || false,
+            cbDelay: o.cbDelay || 0,
+            round: o.round || 1000,
+            update: S.Has(o, 'update') ? function () {o.update(v)} : S.Has(o, 'svg') ? this.propSvg : this.propUpd,
+            progress: 0,
+            time: {
+                elapsed: 0
+            }
+        }
+        v.elL = v.el.length
 
-        setTimeout(this.getRaf, this.delay)
+        var p = o.p || false
+        var s = o.svg || false
+        // Prop
+        if (p) {
+            v.prop = {}
+            v.propPos = []
+            var keys = Object.keys(p)
+            v.propL = keys.length
+            for (var i = 0; i < v.propL; i++) {
+                var key = keys[i]
+                // Save prop in array
+                v.prop[i] = {
+                    name: key,
+                    origin: {
+                        start: p[key][0],
+                        end: p[key][1]
+                    },
+                    curr: p[key][0],
+                    start: p[key][0],
+                    end: p[key][1],
+                    unit: p[key][2] || '%'
+                }
+                // Save position of each prop in prop.arr
+                v.propPos[key.charAt(0)] = i
+            }
+        // Svg
+        } else if (s) {
+            v.svg = {
+                type: s.type,
+                attr: s.type === 'polygon' ? 'points' : 'd',
+                end: s.end,
+                originArr: {},
+                arr: {},
+                val: []
+            }
+            v.svg.start = s.start || v.el[0].getAttribute(v.svg.attr)
+            v.svg.curr = v.svg.start
+            v.svg.originArr.start = this.svgSplit(v.svg.start)
+            v.svg.originArr.end = this.svgSplit(v.svg.end)
+            v.svg.arr.start = v.svg.originArr.start
+            v.svg.arr.end = v.svg.originArr.end
+            v.svg.arrL = v.svg.arr.start.length
+        }
+
+        return v
     },
 
-    pause: function () {
-        this.isPaused = true
+    play: function (opts) {
+        this.v.direction = 1
+        this.init(opts)
     },
 
     reverse: function (opts) {
-        this.init(1, opts)
-
-        this.getRaf()
+        this.v.direction = -1
+        this.init(opts)
     },
 
-    init: function (from, opts) {
+    init: function (opts) {
         this.pause()
+        this.varsUpd(opts)
+        setTimeout(this.getRaf, this.v.delay)
+    },
 
+    pause: function () {
+        cancelAnimationFrame(this.raf)
         this.needEnd = true
+    },
 
-        var endParam = from === 1 ? 'start' : 'end'
-        this.end = this.origin[endParam]
+    varsUpd: function (opts) {
+        var o = opts || {}
+        var newEnd = this.v.direction === 1 ? 'end' : 'start'
 
-        var startParam = from === 1 ? 'end' : 'start'
-        this.start = this.curr
-
-        var delta = this.noMultiT ? (this.end - this.start) : (this.end[this.no] - this.start[this.no])
-        this.duration = Math.abs(delta) * this.coeff
-
-        if (opts) {
-            this.start = opts.newStart || this.start
-            this.end = opts.newEnd || this.end
-            this.duration = opts.duration || this.duration
-            this.ease = opts.ease || this.ease
-            this.cb = opts.callback || false
-            this.delay = opts.delay || 0
-            this.callbackDelay = opts.callbackDelay || 0
-        } else if (from === 1) {
-            this.cb = false
-            this.delay = 0
-            this.callbackDelay = 0
+        // Prop
+        if (S.Has(this.v, 'prop')) {
+            for (var i = 0; i < this.v.propL; i++) {
+                this.v.prop[i].end = this.v.prop[i].origin[newEnd]
+                this.v.prop[i].start = this.v.prop[i].curr
+                if (S.Has(o, 'p') && S.Has(o.p, this.v.prop[i].name)) {
+                    if (S.Has(o.p[this.v.prop[i].name], 'newEnd')) {
+                        this.v.prop[i].end = o.p[this.v.prop[i].name].newEnd
+                    }
+                    if (S.Has(o.p[this.v.prop[i].name], 'newStart')) {
+                        this.v.prop[i].start = o.p[this.v.prop[i].name].newStart
+                    }
+                }
+            }
+        // Svg
+        } else if (S.Has(this.v, 'svg')) {
+            if (S.Has(o, 'svg') && S.Has(o.svg, 'start')) {
+                this.v.svg.arr.start = o.svg.start
+            } else {
+                this.v.svg.arr.start = this.svgSplit(this.v.svg.curr)
+            }
+            if (S.Has(o, 'svg') && S.Has(o.svg, 'end')) {
+                this.v.svg.arr.end = o.svg.end
+            } else {
+                this.v.svg.arr.end = this.v.svg.originArr[newEnd]
+            }
         }
 
-        this.easeCalc = S.Is.string(this.ease) ? S.EasePack[this.ease] : this.easeCalc = S.EaseCSS(this.ease[0], this.ease[1], this.ease[2], this.ease[3])
+        this.v.d.curr = o.d || this.v.d.origin - this.v.d.curr + this.v.time.elapsed
+        this.v.e.value = o.e || this.v.e.value
+        this.v.e.calc = S.Is.string(this.v.e.value) ? S.EasePack[this.v.e.value] : S.EaseCSS(this.v.e.value[0], this.v.e.value[1], this.v.e.value[2], this.v.e.value[3])
+        this.v.delay = o.delay || this.v.delay
+        this.v.cbDelay = o.cbDelay || this.v.cbDelay
+        this.v.cb = S.Has(o, 'cb') ? o.cb : this.v.direction === -1 ? false : this.v.cb
     },
 
     getRaf: function () {
-        this.isPaused = false
-        this.startTime = 0
-        this.raf.start(this.loop)
+        this.v.time.start = 0
+
+        this.raf = requestAnimationFrame(this.loop)
     },
 
     loop: function (now) {
-        if (this.isPaused) return
+        if (!this.v.time.start) this.v.time.start = now
+        this.v.time.elapsed = now - this.v.time.start
+        this.v.progress = this.v.d.curr > 0 ? this.v.e.calc(Math.min(this.v.time.elapsed / this.v.d.curr, 1)) : 1
 
-        if (!this.startTime) this.startTime = now
-        var multiplier = this.duration === 0 ? 1 : Math.min((now - this.startTime) / this.duration, 1)
-        var easeMultiplier = this.easeCalc(multiplier)
+        this.v.update()
 
-        if (this.noMultiT) {
-            this.curr = this.lerp(+this.start, +this.end, easeMultiplier)
-        } else {
-            this.curr = []
-            for (var i = 0; i < this.qty; i++) {
-                this.curr[i] = this.lerp(+this.start[i], +this.end[i], easeMultiplier)
-            }
-        }
-
-        this.update(this.curr)
-
-        if (multiplier < 1) {
-            this.raf.start(this.loop)
+        if (this.v.progress < 1) {
+            this.raf = requestAnimationFrame(this.loop)
         } else if (this.needEnd) {
             this.needEnd = false
-            this.raf.cancel()
-            this.update(this.end)
-            if (this.cb) {
-                setTimeout(this.cb, this.callbackDelay)
+            this.v.update()
+            if (this.v.cb) {
+                setTimeout(this.v.cb, this.v.cbDelay)
             }
         }
     },
 
-    lerp: function (start, end, easeM) {
-        return Math.round(S.Lerp.init(start, end, easeM) * this.round) / this.round
-    },
-
-    singleUp: function () {
-        switch (this.prop) {
-            case '3dx':
-            case '3dy':
-            case 'scale':
-            case 'scaleX':
-            case 'scaleY':
-            case 'rotate':
-            case 'rotateX':
-            case 'rotateY':
-                return this.singleT
-                break
-            case 'gtx':
-            case 'gty':
-                return this.gradientT
-                break
-            case 'scrollTop':
-                return this.scrollTop
-                break
-            default:
-                return this.setOthers
+    propUpd: function () {
+        // Lerp
+        for (var i = 0; i < this.v.propL; i++) {
+            this.v.prop[i].curr = Math.round(S.Lerp.init(this.v.prop[i].start, this.v.prop[i].end, this.v.progress) * this.v.round) / this.v.round
         }
-    },
 
-    multiT: function (val) {
-        var t3dx = 0
-        var t3dy = 0
-        var rotate = ''
-        var scale = ''
+        // Transform
+        var x = S.Has(this.v.propPos, 'x') ? this.v.prop[this.v.propPos['x']].curr + this.v.prop[this.v.propPos['x']].unit : 0
+        var y = S.Has(this.v.propPos, 'y') ? this.v.prop[this.v.propPos['y']].curr + this.v.prop[this.v.propPos['y']].unit : 0
+        var t3d = x + y === 0 ? 0 : 'translate3d(' + x + ',' + y + ',0)'
+        var r = S.Has(this.v.propPos, 'r') ? this.v.prop[this.v.propPos['r']].name + '(' + this.v.prop[this.v.propPos['r']].curr + 'deg)' : 0
+        var s = S.Has(this.v.propPos, 's') ? this.v.prop[this.v.propPos['s']].name + '(' + this.v.prop[this.v.propPos['s']].curr + ')' : 0
+        var t = t3d + r + s === 0 ? 0 : [t3d, r, s].filter(function (val) {return val !== 0}).join(' ')
 
-        for (var i = 0; i < this.qty; i++) {
-            if (this.prop[i] === '3dx') {
-                t3dx = val[i] + this.unitX
-            } else if (this.prop[i] === '3dy') {
-                t3dy = val[i] + this.unitY
-            } else if (this.prop[i].substring(0, 6) === 'rotate') {
-                rotate = this.prop[i] + '(' + val[i] + 'deg)'
-            } else {
-                scale = this.prop[i] + '(' + val[i] + ')'
+        // Opacity
+        var o = S.Has(this.v.propPos, 'o') ? this.v.prop[this.v.propPos['o']].curr : 0
+
+        // Dom update
+        for (var i = 0; i < this.v.elL; i++) {
+            if (t !== 0) {
+                this.v.el[i].style.transform = t
             }
-        }
-
-        var translate3d = 'translate3d(' + t3dx + ',' + t3dy + ',0)'
-        var transformValue = translate3d + ' ' + rotate + ' ' + scale
-
-        this.updateDom('t', transformValue)
-    },
-
-    singleT: function (val) {
-        var transformValue
-        if (this.prop === '3dx' || this.prop === '3dy') {
-            var valueUnit = val + this.unit
-            var translate = this.prop === '3dx' ? valueUnit + ',0' : '0,' + valueUnit
-            transformValue = 'translate3d(' + translate + ',0)'
-        } else if (this.prop.substring(0, 6) === 'rotate') {
-            transformValue = this.prop + '(' + val + 'deg)'
-        } else {
-            transformValue = this.prop + '(' + val + ')'
-        }
-
-        this.updateDom('t', transformValue)
-    },
-
-    gradientT: function (val) {
-        var gt = this.prop === 'gtx' ? val + ',0' : '0,' + val
-        this.updateDom('gradientTransform', 'translate(' + gt + ')')
-    },
-
-    scrollTop: function (val) {
-        this.el[0][this.prop] = val
-    },
-
-    setOthers: function (val) {
-        this.updateDom(this.prop, val)
-    },
-
-    updateDom: function (prop, val) {
-        for (var i = 0; i < this.elL; i++) {
-            if (prop === 't') {
-                this.el[i].style.webkitTransform = val
-                this.el[i].style.transform = val
-            } else if (prop === 'x' || prop === 'y' || prop === 'r' || prop === 'gradientTransform') {
-                this.el[i].setAttribute(prop, val)
-            } else {
-                this.el[i].style[prop] = val + this.unit
+            if (o !== 0) {
+                this.v.el[i].style.opacity = o
             }
         }
     },
 
-    getUnit: function (valueToCheck) {
-        return S.Is.string(valueToCheck) ? 'px' : '%'
+    propSvg: function () {
+        // Lerp
+        this.v.svg.currTemp = ''
+        for (var i = 0; i < this.v.svg.arrL; i++) {
+            this.v.svg.val[i] = this.isSvgLetter(this.v.svg.arr.start[i]) ? this.v.svg.arr.start[i] : Math.round(S.Lerp.init(+this.v.svg.arr.start[i], +this.v.svg.arr.end[i], this.v.progress) * this.v.round) / this.v.round
+            this.v.svg.currTemp += this.v.svg.val[i] + ' '
+            this.v.svg.curr = this.v.svg.currTemp.trim()
+        }
+
+        // Dom update
+        for (var i = 0; i < this.v.elL; i++) {
+            this.v.el[i].setAttribute(this.v.svg.attr, this.v.svg.curr)
+        }
+    },
+
+    has: function (obj, key) {
+        return obj ? hasOwnProperty.call(obj, key) : false
+    },
+
+    svgSplit: function (coords) {
+        var s = coords.split(' ')
+        var sL = s.length
+        var arr = []
+        for (var i = 0; i < sL; i++) {
+            var s2 = s[i].split(',')
+            var s2L = s2.length
+            for (var j = 0; j < s2L; j++) {
+                arr.push(+s2[j])
+            }
+        }
+        return arr
+    },
+
+    isSvgLetter: function (v) {
+        return (v === 'M' || v === 'L' || v === 'C' || v === 'Z')
     }
 
 }

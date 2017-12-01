@@ -5,7 +5,13 @@ const path = S.Win.path
 
 */
 
+var perf = performance
+
 S.Win = {
+    get now () {
+        return perf.now()
+    },
+
     get w () {
         return innerWidth
     },
@@ -24,9 +30,5 @@ S.Win = {
 
     get href () {
         return location.href
-    },
-
-    get pageY () {
-        return pageYOffset
     }
 }

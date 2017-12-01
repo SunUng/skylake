@@ -10,7 +10,7 @@ S.WTDisable = {
         e.preventDefault()
     },
 
-    listeners: function (action) {
+    listener: function (action) {
         var t
 
         if (S.Sniffer.isTouch) {
@@ -25,10 +25,10 @@ S.WTDisable = {
     },
 
     on: function () {
-        this.listeners('add')
+        this.listener('add')
     },
 
     off: function () {
-        this.listeners('remove')
+        this.listener('remove')
     }
 }

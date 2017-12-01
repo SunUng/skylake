@@ -2,59 +2,47 @@
 
 S.BindMaker(this, ['scrollCb'])
 
-this.scroll = new S.Scroll({
-    callback: this.scrollCb,
-    throttle: {
-        delay: 40,
-        onlyAtEnd: false
-    }
-})
+this.scroll = new S.Scroll(this.scrollCb)
 
 this.scroll.on()
 this.scroll.off()
 
-scrollCb (currentScrollY, delta) {
+scrollCb (currentScrollY, delta, event) {
 
 }
 
 */
 
-S.Scroll = function (options) {
-    this.opts = options
-    this.cb = this.opts.callback
+S.Scroll = function (cb) {
+    this.cb = cb
+    this.tick = false
 
-    S.BindMaker(this, ['getThrottle', 'getRAF', 'run'])
-
-    this.throttle = new S.Throttle({
-        callback: this.getRAF,
-        delay: this.opts.throttle.delay,
-        onlyAtEnd: this.opts.throttle.onlyAtEnd
-    })
-    this.rafTicking = new S.RafTicking()
+    S.BindMaker(this, ['getRaf', 'run'])
 }
 
 S.Scroll.prototype = {
 
     on: function () {
-        this.startScrollY = S.Win.pageY
+        this.startScrollY = pageYOffset
 
-        this.listeners('add')
+        this.listener('add')
     },
 
     off: function () {
-        this.listeners('remove')
+        this.listener('remove')
     },
 
-    listeners: function (action) {
-        S.Listen(window, action, 'scroll', this.getThrottle)
+    listener: function (action) {
+        S.Listen(window, action, 'scroll', this.getRaf)
     },
 
-    getThrottle: function () {
-        this.throttle.init()
-    },
+    getRaf: function (e) {
+        this.e = e
 
-    getRAF: function () {
-        this.rafTicking.start(this.run)
+        if (!this.tick) {
+            this.raf = requestAnimationFrame(this.run)
+            this.tick = true
+        }
     },
 
     run: function () {
@@ -64,7 +52,8 @@ S.Scroll.prototype = {
         // Reset start scroll y
         this.startScrollY = currentScrollY
 
-        this.cb(currentScrollY, delta)
+        this.cb(currentScrollY, delta, this.e)
+        this.tick = false
     }
 
 }

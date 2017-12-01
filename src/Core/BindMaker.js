@@ -4,10 +4,10 @@ S.BindMaker(this, ['bindFunction1', 'bindFunction2', 'bindFunction3'])
 
 */
 
-S.BindMaker = function (self, bindArray) {
-    var bindArrayL = bindArray.length
+S.BindMaker = function (self, bindArr) {
+    var bindArrL = bindArr.length
 
-    for (var i = 0; i < bindArrayL; i++) {
-        self[bindArray[i]] = self[bindArray[i]].bind(self)
+    for (var i = 0; i < bindArrL; i++) {
+        self[bindArr[i]] = self[bindArr[i]].bind(self)
     }
 }

@@ -1,39 +1,36 @@
 /*
 
-EXAMPLE
-───────
-
 const options = {
-    totalHeight: element.offsetHeight,
-    callback: afterTop
+    totalH: element.offsetHeight,
+    cb: afterTop
 }
+
 S.ScrollToTop(options)
 
 */
 
-S.ScrollToTop = function (options) {
-    var opts = options
-    var currentPosition = S.Win.pageY
-    var scrollToOptions = {
-        destination: 0,
-        duration: getDuration(),
-        ease: getEase(),
-        callback: opts.callback
+S.ScrollToTop = function (opts) {
+    var currentPos = pageYOffset
+    var scrollToOpts = {
+        dest: 0,
+        d: getDuration(),
+        e: getEase(),
+        cb: opts.cb
     }
 
-    S.ScrollTo(scrollToOptions)
+    S.ScrollTo(scrollToOpts)
 
     function getDuration () {
-        var coeff = S.Lerp.init(300, 1500, currentPosition / opts.totalHeight)
+        var coeff = S.Lerp.init(300, 1500, currentPos / opts.totalH)
 
-        return currentPosition === 0 ? 0 : coeff
+        return currentPos === 0 ? 0 : coeff
     }
 
     function getEase () {
         var step = 500
 
-        if (currentPosition <= step * 5) {
-            return 'Power' + Math.ceil(currentPosition / step) + 'InOut'
+        if (currentPos <= step * 5) {
+            return 'Power' + Math.ceil(currentPos / step) + 'InOut'
         } else {
             return 'ExpoInOut'
         }

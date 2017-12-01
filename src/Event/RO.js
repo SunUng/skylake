@@ -13,38 +13,37 @@ this.RO = new S.RO({
 this.RO.on()
 this.RO.off()
 
-resize () {
+resize (event) {
 
 }
 
 */
 
-S.RO = function (options) {
-    this.opts = options
-    this.cb = this.opts.callback
+S.RO = function (opts) {
+    this.cb = opts.callback
     this.iT = S.Sniffer.isTouch
+    this.tick = false
 
-    S.BindMaker(this, ['getThrottle', 'getRAF'])
+    S.BindMaker(this, ['getThrottle', 'getRaf', 'run'])
 
     this.throttle = new S.Throttle({
-        callback: this.getRAF,
-        delay: this.opts.throttle.delay,
-        onlyAtEnd: this.opts.throttle.onlyAtEnd
+        callback: this.getRaf,
+        delay: opts.throttle.delay,
+        onlyAtEnd: opts.throttle.onlyAtEnd
     })
-    this.rafTicking = new S.RafTicking()
 }
 
 S.RO.prototype = {
 
     on: function () {
-        this.listeners('add')
+        this.listener('add')
     },
 
     off: function () {
-        this.listeners('remove')
+        this.listener('remove')
     },
 
-    listeners: function (action) {
+    listener: function (action) {
         if (this.iT) {
             S.Listen(window, action, 'orientationchange', this.getThrottle)
         } else {
@@ -52,12 +51,21 @@ S.RO.prototype = {
         }
     },
 
-    getThrottle: function () {
+    getThrottle: function (e) {
+        this.e = e
         this.throttle.init()
     },
 
-    getRAF: function () {
-        this.rafTicking.start(this.cb)
+    getRaf: function () {
+        if (!this.tick) {
+            this.raf = requestAnimationFrame(this.run)
+            this.tick = true
+        }
+    },
+
+    run: function () {
+        this.cb(this.e)
+        this.tick = false
     }
 
 }

@@ -6,67 +6,56 @@ S.BindMaker(this, ['mmCb'])
 
 this.MM = new S.MM({
     element: '#element',
-    callback: this.mmCb,
-    throttle: {
-        delay: 40,
-        onlyAtEnd: false
-    }
+    callback: this.mmCb
 })
 
 this.MM.on()
 this.MM.off()
 
-mmCb (posX, posY) {
+mmCb (posX, posY, event) {
 
 }
 
 */
 
-S.MM = function (options) {
-    this.opts = options
-    this.el = S.Selector.el(this.opts.element)[0] || document
-    this.cb = this.opts.callback
+S.MM = function (opts) {
+    this.el = S.Selector.el(opts.element)[0] || document
+    this.cb = opts.callback
     this.iT = S.Sniffer.isTouch
+    this.tick = false
 
-    S.BindMaker(this, ['getThrottle', 'getRAF', 'run'])
-
-    this.throttle = new S.Throttle({
-        callback: this.getRAF,
-        delay: this.opts.throttle.delay,
-        onlyAtEnd: this.opts.throttle.onlyAtEnd
-    })
-    this.rafTicking = new S.RafTicking()
+    S.BindMaker(this, ['getRaf', 'run'])
 }
 
 S.MM.prototype = {
 
     on: function () {
-        this.listeners('add')
+        this.listener('add')
     },
 
     off: function () {
-        this.listeners('remove')
+        this.listener('remove')
     },
 
-    listeners: function (action) {
+    listener: function (action) {
         var type = this.iT ? 'touch' : 'mouse'
-        S.Listen(this.el, action, type + 'move', this.getThrottle)
+        S.Listen(this.el, action, type + 'move', this.getRaf)
     },
 
-    getThrottle: function (e) {
+    getRaf: function (e) {
         this.e = e
 
-        this.throttle.init()
-    },
-
-    getRAF: function () {
-        this.rafTicking.start(this.run)
+        if (!this.tick) {
+            this.raf = requestAnimationFrame(this.run)
+            this.tick = true
+        }
     },
 
     run: function () {
         var t = this.iT ? this.e.changedTouches[0] : this.e
 
         this.cb(t['pageX'], t['pageY'], this.e)
+        this.tick = false
     }
 
 }
