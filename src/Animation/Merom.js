@@ -89,7 +89,7 @@ S.Merom.prototype = {
             delay: o.delay || 0,
             cb: o.cb || false,
             cbDelay: o.cbDelay || 0,
-            round: o.round || 1000,
+            round: o.round,
             update: S.Has(o, 'update') ? function () {o.update(v)} : S.Has(o, 'svg') ? this.propSvg : this.propUpd,
             progress: 0,
             time: {
@@ -274,7 +274,7 @@ S.Merom.prototype = {
     },
 
     lerp: function (start, end) {
-        return Math.round(S.Lerp.init(start, end, this.v.progress) * this.v.round) / this.v.round
+        return S.Round(S.Lerp.init(start, end, this.v.progress), this.v.round)
     },
 
     svgSplit: function (coords) {

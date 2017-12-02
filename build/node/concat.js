@@ -11,6 +11,7 @@ const srcArr = [
     'src/Core/Has.js',
     'src/Core/Is.js',
     'src/Core/Lerp.js',
+    'src/Core/Round.js',
     'src/Core/Sniffer.js',
     'src/Core/Throttle.js',
     'src/El/Geb.js', // Must be before 'Dom'

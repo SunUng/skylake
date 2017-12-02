@@ -30,22 +30,22 @@ S.Timeline.prototype = {
         this.arrL++
     },
 
-    play: function () {
-        for (var i = 0; i < this.arrL; i++) {
-            this.arr[i].play()
-        }
+    play: function (opts) {
+        this.run('play', opts)
     },
 
     pause: function () {
-        for (var i = 0; i < this.arrL; i++) {
-            this.arr[i].pause()
-        }
+        this.run('pause')
     },
 
     reverse: function (opts) {
+        this.run('reverse', opts)
+    },
+
+    run: function (type, opts) {
         for (var i = 0; i < this.arrL; i++) {
             var opt = !opts ? undefined : opts[i]
-            this.arr[i].reverse(opt)
+            this.arr[i][type](opt)
         }
     }
 
