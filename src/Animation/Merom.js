@@ -233,7 +233,7 @@ S.Merom.prototype = {
     propUpd: function () {
         // Lerp
         for (var i = 0; i < this.v.propL; i++) {
-            this.v.prop[i].curr = Math.round(S.Lerp.init(this.v.prop[i].start, this.v.prop[i].end, this.v.progress) * this.v.round) / this.v.round
+            this.v.prop[i].curr = this.lerp(this.v.prop[i].start, this.v.prop[i].end)
         }
 
         // Transform
@@ -262,7 +262,7 @@ S.Merom.prototype = {
         // Lerp
         this.v.svg.currTemp = ''
         for (var i = 0; i < this.v.svg.arrL; i++) {
-            this.v.svg.val[i] = this.isSvgLetter(this.v.svg.arr.start[i]) ? this.v.svg.arr.start[i] : Math.round(S.Lerp.init(+this.v.svg.arr.start[i], +this.v.svg.arr.end[i], this.v.progress) * this.v.round) / this.v.round
+            this.v.svg.val[i] = this.isSvgLetter(this.v.svg.arr.start[i]) ? this.v.svg.arr.start[i] : this.lerp(+this.v.svg.arr.start[i], +this.v.svg.arr.end[i])
             this.v.svg.currTemp += this.v.svg.val[i] + ' '
             this.v.svg.curr = this.v.svg.currTemp.trim()
         }
@@ -273,8 +273,8 @@ S.Merom.prototype = {
         }
     },
 
-    has: function (obj, key) {
-        return obj ? hasOwnProperty.call(obj, key) : false
+    lerp: function (start, end) {
+        return Math.round(S.Lerp.init(start, end, this.v.progress) * this.v.round) / this.v.round
     },
 
     svgSplit: function (coords) {

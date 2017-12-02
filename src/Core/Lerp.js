@@ -4,7 +4,7 @@
 
 S.Lerp.init(start, end, multiplier)
 
-►►►  extend : lerp with change of coordinates
+►►►  extend : lerp with coordinates change
 
 S.Lerp.extend(nX, n0, n1, start, end)
 
