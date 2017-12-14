@@ -17,7 +17,7 @@ type → 'scroll' or 'touch'
 
 S.WT = function (cb) {
     this.cb = cb
-    this.iT = S.Sniffer.isTouch
+    this.iM = S.Sniffer.isMobile
     this.tick = false
 
     S.BindMaker(this, ['touchStart', 'getRaf', 'run'])
@@ -35,7 +35,7 @@ S.WT.prototype = {
 
     listener: function (action) {
         var d = document
-        if (this.iT) {
+        if (this.iM) {
             S.Listen(d, action, 'touchstart', this.touchStart)
             S.Listen(d, action, 'touchmove', this.getRaf)
         } else {

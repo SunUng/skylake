@@ -13,7 +13,7 @@ S.WTDisable = {
     listener: function (action) {
         var t
 
-        if (S.Sniffer.isTouch) {
+        if (S.Sniffer.isMobile) {
             var c = action === 'add' ? 'none' : ''
             S.Dom.body.style.touchAction = c
             t = 'touchmove'

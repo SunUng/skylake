@@ -21,7 +21,7 @@ resize (event) {
 
 S.RO = function (opts) {
     this.cb = opts.callback
-    this.iT = S.Sniffer.isTouch
+    this.iM = S.Sniffer.isMobile
     this.tick = false
 
     S.BindMaker(this, ['getThrottle', 'getRaf', 'run'])
@@ -44,7 +44,7 @@ S.RO.prototype = {
     },
 
     listener: function (action) {
-        if (this.iT) {
+        if (this.iM) {
             S.Listen(window, action, 'orientationchange', this.getThrottle)
         } else {
             S.Listen(window, action, 'resize', this.getThrottle)

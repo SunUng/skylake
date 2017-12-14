@@ -9,9 +9,28 @@ const isTouch = S.Sniffer.isTouch
 S.Sniffer = {
     uA: navigator.userAgent.toLowerCase(),
 
+    get isMobileIE () {
+        return /iemobile/i.test(this.uA)
+    },
+
+    get isMobileOpera () {
+        return /opera mini/i.test(this.uA)
+    },
+
+    get isIOS () {
+        return /iphone|ipad|ipod/i.test(this.uA)
+    },
+
+    get isBlackberry () {
+        return /blackberry/i.test(this.uA)
+    },
+
+    get isMobileAndroid () {
+        return /android.*mobile/.test(this.uA)
+    },
+
     get isAndroid () {
-        var isDroidPhone = /android.*mobile/.test(this.uA)
-        return isDroidPhone || !isDroidPhone && /android/i.test(this.uA)
+        return this.isMobileAndroid || !this.isMobileAndroid && /android/i.test(this.uA)
     },
 
     get isFirefox () {
@@ -50,6 +69,10 @@ S.Sniffer = {
 
     get isMac () {
         return navigator.platform.toLowerCase().indexOf('mac') > -1
+    },
+
+    get isMobile () {
+        return this.isMobileAndroid || this.isBlackberry || this.isIOS || this.isMobileOpera || this.isMobileIE
     },
 
     get isTouch () {

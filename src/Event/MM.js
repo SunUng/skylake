@@ -21,7 +21,7 @@ mmCb (posX, posY, event) {
 S.MM = function (opts) {
     this.el = S.Selector.el(opts.element)[0] || document
     this.cb = opts.callback
-    this.iT = S.Sniffer.isTouch
+    this.iM = S.Sniffer.isMobile
     this.tick = false
 
     S.BindMaker(this, ['getRaf', 'run'])
@@ -38,7 +38,7 @@ S.MM.prototype = {
     },
 
     listener: function (action) {
-        var type = this.iT ? 'touch' : 'mouse'
+        var type = this.iM ? 'touch' : 'mouse'
         S.Listen(this.el, action, type + 'move', this.getRaf)
     },
 
@@ -52,7 +52,7 @@ S.MM.prototype = {
     },
 
     run: function () {
-        var t = this.iT ? this.e.changedTouches[0] : this.e
+        var t = this.iM ? this.e.changedTouches[0] : this.e
 
         this.cb(t['pageX'], t['pageY'], this.e)
         this.tick = false
