@@ -46,13 +46,13 @@ Look at the **src** folder in the github repository for more information
 
 Aristide Benoist
 
-[www.aristidebenoist.com](http://www.aristidebenoist.com)
+[www.aristidebenoist.com](https://www.aristidebenoist.com)
 
 ## Licence
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Aristide Benoist
+Copyright (c) 2018 Aristide Benoist
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

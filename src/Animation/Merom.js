@@ -38,9 +38,9 @@ EXAMPLE TRANSLATION
 
 this.anim = new S.Merom({el: '#id', p: {x: [0, 600, 'px']}, d: 2000, e: 'Power4Out'})
 
-this.anim.play({p: {x: {newStart: 0, newEnd: 100}}})
+this.anim.play()
 
-this.anim.reverse({p: {x: {newEnd: 50}}})
+this.anim.play({p: {x: {newEnd: 50}}, reverse: true})
 
 EXAMPLE MORPHING JS
 ───────────────────
@@ -56,8 +56,6 @@ this.morph = new S.Merom({
 })
 
 this.morph.play()
-
-this.morph.reverse()
 
 EXAMPLE MORPHING HTML
 ─────────────────────
@@ -89,6 +87,7 @@ S.Merom.prototype = {
             delay: o.delay || 0,
             cb: o.cb || false,
             cbDelay: o.cbDelay || 0,
+            reverse: o.reverse || false,
             round: o.round,
             update: S.Has(o, 'update') ? function () {o.update(v)} : S.Has(o, 'svg') ? this.propSvg : this.propUpd,
             progress: 0,
@@ -146,16 +145,6 @@ S.Merom.prototype = {
     },
 
     play: function (opts) {
-        this.v.direction = 1
-        this.init(opts)
-    },
-
-    reverse: function (opts) {
-        this.v.direction = -1
-        this.init(opts)
-    },
-
-    init: function (opts) {
         this.pause()
         this.varsUpd(opts)
         setTimeout(this.getRaf, this.v.delay)
@@ -168,7 +157,7 @@ S.Merom.prototype = {
 
     varsUpd: function (opts) {
         var o = opts || {}
-        var newEnd = this.v.direction === 1 ? 'end' : 'start'
+        var newEnd = opts.reverse ? 'end' : 'start'
 
         // Prop
         if (S.Has(this.v, 'prop')) {
@@ -203,7 +192,7 @@ S.Merom.prototype = {
         this.v.e.calc = S.Is.string(this.v.e.value) ? S.EasePack[this.v.e.value] : S.EaseCSS(this.v.e.value[0], this.v.e.value[1], this.v.e.value[2], this.v.e.value[3])
         this.v.delay = S.Has(o, 'delay') ? o.delay : this.v.delay
         this.v.cbDelay = S.Has(o, 'cbDelay') ? o.cbDelay : this.v.cbDelay
-        this.v.cb = S.Has(o, 'cb') ? o.cb : this.v.direction === -1 ? false : this.v.cb
+        this.v.cb = S.Has(o, 'cb') ? o.cb : this.v.cb
     },
 
     getRaf: function () {

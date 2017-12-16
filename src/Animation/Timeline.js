@@ -38,10 +38,6 @@ S.Timeline.prototype = {
         this.run('pause')
     },
 
-    reverse: function (opts) {
-        this.run('reverse', opts)
-    },
-
     run: function (type, opts) {
         for (var i = 0; i < this.arrL; i++) {
             var opt = !opts ? undefined : opts[i]

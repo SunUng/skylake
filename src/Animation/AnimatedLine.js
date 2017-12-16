@@ -39,17 +39,9 @@ this.animatedLine = new S.AnimatedLine({
 
 this.animatedLine.play()
 
-this.animatedLine.reverse()
-
 this.animatedLine.pause()
 
 this.animatedLine.play({
-    d: 500,
-    e: 'Power4InOut',
-    cb: myCallback
-})
-
-this.animatedLine.reverse({
     d: 500,
     e: 'Power4InOut',
     cb: myCallback
@@ -176,12 +168,6 @@ S.AnimatedLine.prototype = {
     pause: function () {
         for (var i = 0; i < this.elL; i++) {
             this.merom[i].pause()
-        }
-    },
-
-    reverse: function (opts) {
-        for (var i = 0; i < this.elL; i++) {
-            this.merom[i].reverse(opts)
         }
     }
 
