@@ -157,7 +157,7 @@ S.Merom.prototype = {
 
     varsUpd: function (opts) {
         var o = opts || {}
-        var newEnd = opts.reverse ? 'end' : 'start'
+        var newEnd = (S.Has(o, 'reverse') && opts.reverse) ? 'end' : 'start'
 
         // Prop
         if (S.Has(this.v, 'prop')) {
