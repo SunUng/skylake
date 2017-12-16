@@ -8,11 +8,6 @@ this.tl.play()
 
 this.tl.pause()
 
-this.tl.reverse([
-    {p: {x: {newEnd: 100}}},
-    {p: {x: {newEnd: 400}}}
-])
-
 */
 
 S.Timeline = function () {
