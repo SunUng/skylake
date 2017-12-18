@@ -12,17 +12,15 @@ this.tl.pause()
 
 S.Timeline = function () {
     this.arr = []
-    this.arrL = 0
+    this.delay = 0
 }
 
 S.Timeline.prototype = {
 
     from: function (opts) {
-        if (this.arrL > 0) {
-            opts.delay += this.arr[this.arrL - 1].v.delay || 0
-        }
+        this.delay += S.Has(opts, 'delay') ? opts.delay : 0
+        opts.delay = this.delay
         this.arr.push(new S.Merom(opts))
-        this.arrL++
     },
 
     play: function (opts) {
@@ -34,7 +32,8 @@ S.Timeline.prototype = {
     },
 
     run: function (type, opts) {
-        for (var i = 0; i < this.arrL; i++) {
+        var arrL = this.arr.length
+        for (var i = 0; i < arrL; i++) {
             var opt = !opts ? undefined : opts[i]
             this.arr[i][type](opt)
         }
