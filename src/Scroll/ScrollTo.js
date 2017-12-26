@@ -1,13 +1,11 @@
 /*
 
-const options = {
+S.ScrollTo({
     dest: 1000,
     d: 200,
     e: 'Power3Out',
     cb: afterTop
-}
-
-S.ScrollTo(options)
+})
 
 */
 

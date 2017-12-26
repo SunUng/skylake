@@ -8,6 +8,8 @@ this.tl.play()
 
 this.tl.pause()
 
+this.tl.play({reverse: true})
+
 */
 
 S.Timeline = function () {
@@ -23,19 +25,19 @@ S.Timeline.prototype = {
         this.arr.push(new S.Merom(opts))
     },
 
-    play: function (opts) {
-        this.run('play', opts)
+    play: function (reverse) {
+        this.run('play', reverse)
     },
 
     pause: function () {
         this.run('pause')
     },
 
-    run: function (type, opts) {
+    run: function (type, r) {
         var arrL = this.arr.length
+        var o = !r ? undefined : r
         for (var i = 0; i < arrL; i++) {
-            var opt = !opts ? undefined : opts[i]
-            this.arr[i][type](opt)
+            this.arr[i][type](o)
         }
     }
 
