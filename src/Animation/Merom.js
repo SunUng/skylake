@@ -238,7 +238,7 @@ S.Merom.prototype = {
 
         // Dom update
         for (var i = 0; i < this.v.elL; i++) {
-            if (this.v.el[i] === undefined) break
+            if (this.hasNoEl(i)) break
             if (t !== 0) {
                 this.v.el[i].style.transform = t
             }
@@ -259,8 +259,16 @@ S.Merom.prototype = {
 
         // Dom update
         for (var i = 0; i < this.v.elL; i++) {
-            if (this.v.el[i] === undefined) break
+            if (this.hasNoEl(i)) break
             this.v.el[i].setAttribute(this.v.svg.attr, this.v.svg.curr)
+        }
+    },
+
+    hasNoEl: function (i) {
+        if (this.v.el[i] === undefined) {
+            return true
+        } else {
+            return false
         }
     },
 
