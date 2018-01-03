@@ -238,6 +238,7 @@ S.Merom.prototype = {
 
         // Dom update
         for (var i = 0; i < this.v.elL; i++) {
+            if (this.v.el[i] === undefined) break
             if (t !== 0) {
                 this.v.el[i].style.transform = t
             }
@@ -258,6 +259,7 @@ S.Merom.prototype = {
 
         // Dom update
         for (var i = 0; i < this.v.elL; i++) {
+            if (this.v.el[i] === undefined) break
             this.v.el[i].setAttribute(this.v.svg.attr, this.v.svg.curr)
         }
     },
