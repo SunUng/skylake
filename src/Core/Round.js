@@ -12,6 +12,6 @@ S.Round(number, precision)
 */
 
 S.Round = function (n, p) {
-    var p = p ? Math.pow(10, p) : 1000
+    var p = p !== undefined ? Math.pow(10, p) : 1000
     return Math.round(n * p) / p
 }
