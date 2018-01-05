@@ -93,6 +93,7 @@ S.AnimatedLine = function (opts) {
     var elWL = opts.elWithLength
     var d = opts.d
     var e = opts.e
+    var delay = opts.delay || 0
     var dashed = opts.dashed || false
     var start = opts.start || 0
     var end = opts.end || 100
@@ -130,11 +131,14 @@ S.AnimatedLine = function (opts) {
         startArr[i] = startCoeff * shapeL[i]
         endArr[i] = endCoeff * shapeL[i]
 
-        this.merom[i] = new S.Merom({d: d, e: e, update: upd, cb: cb[i]})
+        this.merom[i] = new S.Merom({d: d, e: e, update: upd, delay: delay, cb: cb[i]})
     }
 
     function upd (v) {
         for (var i = 0; i < self.elL; i++) {
+            if (v.progress === 0) {
+                self.el[i].style.opacity = 1
+            }
             self.el[i].style.strokeDashoffset = Math.round(S.Lerp.init(startArr[i], endArr[i], v.progress) * r) / r
         }
     }
@@ -160,7 +164,6 @@ S.AnimatedLine.prototype = {
 
     play: function (opts) {
         for (var i = 0; i < this.elL; i++) {
-            this.el[i].style.opacity = 1
             this.merom[i].play(opts)
         }
     },
