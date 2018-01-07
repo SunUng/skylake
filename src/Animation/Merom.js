@@ -33,7 +33,15 @@ type                'polygon' or 'path'
 start               optional
 end
 
-EXAMPLE TRANSLATION
+LINE
+────
+
+elWithLength        optional → The total length of the line is calculated with him if he's present (example: folio dodecagon)
+dashed              '1,4' or false
+start               percentage → default: 0
+end                 percentage → default: 100
+
+TRANSLATION EXAMPLE
 ───────────────────
 
 this.anim = new S.Merom({el: '#id', p: {x: [0, 600, 'px']}, d: 2000, e: 'Power4Out'})
@@ -42,7 +50,7 @@ this.anim.play()
 
 this.anim.play({p: {x: {newEnd: 50}}, reverse: true})
 
-EXAMPLE MORPHING JS
+MORPHING JS EXAMPLE
 ───────────────────
 
 this.morph = new S.Merom({
@@ -57,17 +65,57 @@ this.morph = new S.Merom({
 
 this.morph.play()
 
-EXAMPLE MORPHING HTML
+MORPHING HTML EXAMPLE
 ─────────────────────
 
 <svg width="130" height="130" viewBox="0 0 130 130">
     <polygon id="circle" points="65,0 71.7,0.3 78.2,1.4 85.6,3.3 92.6,6.1 97.1,8.5 102.3,11.8 107.1,15.5 111.1,19.2 116,24.7 119.4,29.5 122.7,35 125.2,40.4 127.5,47.2 129,53.5 129.8,59.6 130,65 129.8,70.6 128.9,76.9 127.5,82.9 125.2,89.5 122.6,95.1 119.6,100.3 115.7,105.7 111,111 106.6,115 101.7,118.6 95.8,122.2 90.1,125 83.1,127.4 76.3,129 70.6,129.8 65,130 59.6,129.8 53.1,128.9 46.7,127.4 40.4,125.2 34.5,122.4 29,119.1 23.9,115.3 19,111 13.9,105.1 10.6,100.6 7.2,94.8 4.8,89.5 2.3,82.4 1.1,76.9 0.3,71.2 0,65 0.3,58.8 1.1,53 2.9,45.8 5.8,38.1 8.3,33.2 11.3,28.3 14.7,23.8 19.1,18.9 23.8,14.7 28.8,11 34.1,7.8 39.3,5.3 46.5,2.7 53.2,1.1 58.9,0.3"/>
 </svg>
 
+LINE JS EXAMPLE
+───────────────
+
+this.line = new S.Merom({
+    el: '.shape',
+    line: {
+        elWithLength: this.el
+        dashed: '1,4',
+        start: 0,
+        end: 25,
+    },
+    d: 2000,
+    e: 'Power4Out'
+})
+
+this.line.play()
+
+LINE CIRCLE HTML EXAMPLE
+────────────────────────
+
+<svg width="30" height="30" viewBox="0 0 30 30">
+    <circle class="shape" r="14.5" cx="15" cy="15"></circle>
+</svg>
+
+LINE PATH HTML EXAMPLE
+──────────────────────
+
+<svg width="100" height="100" viewBox="0 0 100 100">
+    <path class="shape" d="M1,50a49,49 0 1,0 98,0a49,49 0 1,0 -98,0"/>
+</svg>
+
+LINE CSS EXAMPLE
+────────────────
+
+.shape {
+    fill: none;
+    stroke: pink;
+    opacity: 0;
+}
+
 */
 
 S.Merom = function (opts) {
-    S.BindMaker(this, ['getRaf', 'loop', 'propUpd', 'propSvg'])
+    S.BindMaker(this, ['getRaf', 'loop', 'updSvg', 'updLine', 'updProp'])
 
     this.v = this.varsInit(opts)
 }
@@ -89,7 +137,6 @@ S.Merom.prototype = {
             cbDelay: o.cbDelay || 0,
             reverse: o.reverse || false,
             round: o.round,
-            update: S.Has(o, 'update') ? function () {o.update(v)} : S.Has(o, 'svg') ? this.propSvg : this.propUpd,
             progress: 0,
             time: {
                 elapsed: 0
@@ -97,8 +144,20 @@ S.Merom.prototype = {
         }
         v.elL = v.el.length
 
+        // Update
+        if (S.Has(o, 'update')) {
+            v.update = function () {o.update(v)}
+        } else if (S.Has(o, 'svg')) {
+            v.update = this.updSvg
+        } else if (S.Has(o, 'line')) {
+            v.update = this.updLine
+        } else {
+            v.update = this.updProp
+        }
+
         var p = o.p || false
         var s = o.svg || false
+        var l = o.line || false
         // Prop
         if (p) {
             v.prop = {}
@@ -139,6 +198,65 @@ S.Merom.prototype = {
             v.svg.arr.start = v.svg.originArr.start
             v.svg.arr.end = v.svg.originArr.end
             v.svg.arrL = v.svg.arr.start.length
+        // Line
+        } else if (l) {
+            v.line = {
+                elWL: l.elWithLength,
+                dashed: l.dashed,
+                coeff: {
+                    start: l.start !== undefined ? (100 - l.start) / 100 : 1,
+                    end: l.end !== undefined ? (100 - l.end) / 100 : 0
+                },
+                shapeL: [],
+                cb: [],
+                origin: {
+                    start: [],
+                    end: []
+                }
+            }
+
+            for (var i = 0; i < v.elL; i++) {
+                v.line.shapeL[i] = getShapeLength(v.el[i])
+                v.line.cb[i] = i === v.elL - 1 ? v.cb : false
+
+                var strokeD
+                if (v.line.dashed) {
+                    var dashL = 0
+                    var dashArr = dashed.split(/[\s,]/)
+                    var dashArrL = dashArr.length
+                    for (var j = 0; j < dashArrL; j++) {
+                        dashL += parseFloat(dashArr[j]) || 0
+                    }
+                    var a = ''
+                    var dashCount = Math.ceil(v.line.shapeL[i] / dashL)
+                    for (var j = 0; j < dashCount; j++) {
+                        a += dashed + ' '
+                    }
+                    strokeD = a + '0' + ' ' + v.line.shapeL[i]
+                } else {
+                    strokeD = v.line.shapeL[i]
+                }
+                v.el[i].style.strokeDasharray = strokeD
+                v.line.origin.start[i] = v.line.coeff.start * v.line.shapeL[i]
+                v.line.origin.end[i] = v.line.coeff.end * v.line.shapeL[i]
+            }
+            v.line.curr = v.line.origin.start.slice(0)
+
+            function getShapeLength (el) {
+                if (el.tagName === 'circle') {
+                    var radius = el.getAttribute('r')
+                    return 2 * radius * Math.PI
+                } else if (el.tagName === 'line') {
+                    var x1 = el.getAttribute('x1')
+                    var x2 = el.getAttribute('x2')
+                    var y1 = el.getAttribute('y1')
+                    var y2 = el.getAttribute('y2')
+                    return Math.sqrt((x2 -= x1) * x2 + (y2 -= y1) * y2)
+                } else {
+                    var el = v.line.elWL || el
+                    return el.getTotalLength()
+                }
+            }
         }
 
         return v
@@ -185,6 +303,10 @@ S.Merom.prototype = {
             } else {
                 this.v.svg.arr.end = this.v.svg.originArr[newEnd]
             }
+        // Line
+        } else if (S.Has(this.v, 'line')) {
+            this.v.line.end = this.v.line.origin[newEnd].slice(0)
+            this.v.line.start = this.v.line.curr.slice(0)
         }
 
         this.v.d.curr = S.Has(o, 'd') ? o.d : this.v.d.origin - this.v.d.curr + this.v.time.elapsed
@@ -219,7 +341,7 @@ S.Merom.prototype = {
         }
     },
 
-    propUpd: function () {
+    updProp: function () {
         // Lerp
         for (var i = 0; i < this.v.propL; i++) {
             this.v.prop[i].curr = this.lerp(this.v.prop[i].start, this.v.prop[i].end)
@@ -248,7 +370,7 @@ S.Merom.prototype = {
         }
     },
 
-    propSvg: function () {
+    updSvg: function () {
         // Lerp
         this.v.svg.currTemp = ''
         for (var i = 0; i < this.v.svg.arrL; i++) {
@@ -261,6 +383,18 @@ S.Merom.prototype = {
         for (var i = 0; i < this.v.elL; i++) {
             if (this.v.el[i] === undefined) break
             this.v.el[i].setAttribute(this.v.svg.attr, this.v.svg.curr)
+        }
+    },
+
+    updLine: function () {
+        // Lerp + Dom update
+        for (var i = 0; i < this.v.elL; i++) {
+            var elS = this.v.el[i].style
+            this.v.line.curr[i] = this.lerp(this.v.line.start[i], this.v.line.end[i])
+            elS.strokeDashoffset = this.v.line.curr[i]
+            if (this.v.progress === 0) {
+                elS.opacity = 1
+            }
         }
     },
 

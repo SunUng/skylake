@@ -3,7 +3,6 @@ const fs = require('fs')
 const srcArr = [
     'src/Base/S.js',
     'src/Animation/Merom.js',
-    'src/Animation/AnimatedLine.js',
     'src/Animation/Timeline.js',
     'src/Core/BindMaker.js',
     'src/Core/EasePack.js',
