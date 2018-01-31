@@ -1,6 +1,6 @@
 {
     "name": "skylake",
-    "version": "6.0.0",
+    "version": "6.1.0",
     "description": "A light JavaScript library.",
     "author": "Aristide Benoist",
     "license": "MIT",
@@ -16,7 +16,7 @@
         "url": "git+https://github.com/ariiiman/skylake.git"
     },
     "devDependencies": {
-        "uglify-js": "3.3.4"
+        "uglify-js": "3.3.9"
     },
     "scripts": {
         "build": "bash build/bash/build.sh",

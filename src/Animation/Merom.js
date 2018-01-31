@@ -25,6 +25,8 @@ scale
 scaleX
 scaleY
 opacity
+height
+width
 
 SVG
 ───
@@ -358,6 +360,10 @@ S.Merom.prototype = {
         // Opacity
         var o = S.Has(this.v.propPos, 'o') ? this.v.prop[this.v.propPos['o']].curr : -1
 
+        // Width & Height
+        var w = S.Has(this.v.propPos, 'w') ? this.v.prop[this.v.propPos['w']].curr + this.v.prop[this.v.propPos['w']].unit : 0
+        var h = S.Has(this.v.propPos, 'h') ? this.v.prop[this.v.propPos['h']].curr + this.v.prop[this.v.propPos['h']].unit : 0
+
         // Dom update
         for (var i = 0; i < this.v.elL; i++) {
             if (this.v.el[i] === undefined) break
@@ -366,6 +372,12 @@ S.Merom.prototype = {
             }
             if (o >= 0) {
                 this.v.el[i].style.opacity = o
+            }
+            if (w !== 0) {
+                this.v.el[i].style.width = w
+            }
+            if (h !== 0) {
+                this.v.el[i].style.height = h
             }
         }
     },
