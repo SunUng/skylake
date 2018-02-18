@@ -20,7 +20,7 @@ Look at the **src** folder in the github repository for more information
 
 ### Add scroll event listener
 
-    S.Listen(window, 'add', 'scroll', callback)
+    S.Listen(element, 'add', 'click', callback)
 
 ### Check if a variable is an object
 
@@ -30,7 +30,7 @@ Look at the **src** folder in the github repository for more information
 
     const animation = new S.Merom({el: '#id', p: {x: [0, 600, 'px']}, d: 2000, e: 'Power4InOut'})
     animation.play()
-    animation.reverse()
+    animation.play({p: {x: {newEnd: 50}}, reverse: true})
 
 ### Build sequences of Merom with Timeline
 
@@ -41,6 +41,8 @@ Look at the **src** folder in the github repository for more information
     tl.play()
 
     tl.pause()
+
+    this.tl.play({reverse: true})
 
 ## Author
 
