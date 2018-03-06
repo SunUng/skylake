@@ -83,7 +83,7 @@ this.line = new S.Merom({
         elWithLength: this.el
         dashed: '1,4',
         start: 0,
-        end: 25,
+        end: 25
     },
     d: 2000,
     e: 'Power4Out'
