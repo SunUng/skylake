@@ -42,7 +42,7 @@ Look at the **src** folder in the github repository for more information
 
     tl.pause()
 
-    this.tl.play({reverse: true})
+    tl.play({reverse: true})
 
 ## Author
 
