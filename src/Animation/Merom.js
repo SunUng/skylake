@@ -254,6 +254,18 @@ S.Merom.prototype = {
                     var y1 = el.getAttribute('y1')
                     var y2 = el.getAttribute('y2')
                     return Math.sqrt((x2 -= x1) * x2 + (y2 -= y1) * y2)
+                } else if (el.tagName === 'polyline') {
+                    var totalLength = 0
+                    var prevPos
+                    var elPtsL = el.points.numberOfItems
+                    for (var i = 0; i < elPtsL; i++) {
+                        var pos = el.points.getItem(i)
+                        if (i > 0) {
+                            totalLength += Math.sqrt(Math.pow((pos.x - prevPos.x), 2) + Math.pow((pos.y - prevPos.y), 2))
+                        }
+                        prevPos = pos
+                    }
+                    return totalLength
                 } else {
                     var el = v.line.elWL || el
                     return el.getTotalLength()
