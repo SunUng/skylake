@@ -210,16 +210,17 @@ S.Merom.prototype = {
                     end: l.end !== undefined ? (100 - l.end) / 100 : 0
                 },
                 shapeL: [],
-                cb: [],
                 origin: {
                     start: [],
                     end: []
-                }
+                },
+                curr: [],
+                start: [],
+                end: []
             }
 
             for (var i = 0; i < v.elL; i++) {
                 v.line.shapeL[i] = getShapeLength(v.el[i])
-                v.line.cb[i] = i === v.elL - 1 ? v.cb : false
 
                 var strokeD
                 if (v.line.dashed) {
@@ -241,8 +242,10 @@ S.Merom.prototype = {
                 v.el[i].style.strokeDasharray = strokeD
                 v.line.origin.start[i] = v.line.coeff.start * v.line.shapeL[i]
                 v.line.origin.end[i] = v.line.coeff.end * v.line.shapeL[i]
+                v.line.curr[i] = v.line.origin.start[i]
+                v.line.start[i] = v.line.origin.start[i]
+                v.line.end[i] = v.line.origin.end[i]
             }
-            v.line.curr = v.line.origin.start.slice(0)
 
             function getShapeLength (el) {
                 if (el.tagName === 'circle') {
@@ -319,8 +322,17 @@ S.Merom.prototype = {
             }
         // Line
         } else if (S.Has(this.v, 'line')) {
-            this.v.line.end = this.v.line.origin[newEnd].slice(0)
-            this.v.line.start = this.v.line.curr.slice(0)
+            for (var i = 0; i < this.v.elL; i++) {
+                this.v.line.start[i] = this.v.line.curr[i]
+            }
+            if (S.Has(o, 'line') && S.Has(o.line, 'end')) {
+                this.v.line.coeff.end = (100 - o.line.end) / 100
+                for (var i = 0; i < this.v.elL; i++) {
+                    this.v.line.end[i] = this.v.line.coeff.end * this.v.line.shapeL[i]
+                }
+            } else {
+                this.v.line.end[i] = this.v.line.origin[newEnd][i]
+            }
         }
 
         this.v.d.curr = S.Has(o, 'd') ? o.d : this.v.d.origin - this.v.d.curr + this.v.time.elapsed
