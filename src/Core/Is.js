@@ -16,6 +16,10 @@ S.Is = {
 
     array: function (v) {
         return v.constructor === Array
+    },
+
+    defined: function (v) {
+        return v !== undefined
     }
 }
 
