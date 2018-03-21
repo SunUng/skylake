@@ -18,8 +18,12 @@ S.Is = {
         return v.constructor === Array
     },
 
-    defined: function (v) {
+    def: function (v) {
         return v !== undefined
+    },
+
+    undef: function (v) {
+        return v === undefined
     }
 }
 
