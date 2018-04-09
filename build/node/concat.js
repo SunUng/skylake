@@ -20,7 +20,6 @@ const srcArr = [
     'src/Event/MM.js',
     'src/Event/RO.js',
     'src/Event/Scroll.js',
-    'src/Event/WTDisable.js',
     'src/Event/WT.js',
     'src/Listener/Listen.js',
     'src/Scroll/ScrollToTop.js',
