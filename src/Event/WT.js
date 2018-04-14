@@ -17,7 +17,7 @@ type → 'scroll' or 'touch'
 
 S.WT = function (cb) {
     this.cb = cb
-    this.iM = S.Sniffer.isMobile
+    this.iM = S.Snif.isMobile
     this.tick = false
 
     S.BindMaker(this, ['touchStart', 'getRaf', 'run'])
@@ -26,20 +26,20 @@ S.WT = function (cb) {
 S.WT.prototype = {
 
     on: function () {
-        this.listener('add')
+        this.l('add')
     },
 
     off: function () {
-        this.listener('remove')
+        this.l('remove')
     },
 
-    listener: function (action) {
+    l: function (action) {
         var d = document
         if (this.iM) {
-            S.Listen(d, action, 'touchstart', this.touchStart)
-            S.Listen(d, action, 'touchmove', this.getRaf)
+            S.L(d, action, 'touchstart', this.touchStart)
+            S.L(d, action, 'touchmove', this.getRaf)
         } else {
-            S.Listen(d, action, 'mouseWheel', this.getRaf)
+            S.L(d, action, 'mouseWheel', this.getRaf)
         }
     },
 
@@ -71,7 +71,7 @@ S.WT.prototype = {
 
         // deltamode === 1 -> wheel mouse, not touch pad
         // https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent#Delta_modes
-        if (S.Sniffer.isFirefox && this.e.deltaMode === 1) {
+        if (S.Snif.isFirefox && this.e.deltaMode === 1) {
             this.delta *= 40
         }
 

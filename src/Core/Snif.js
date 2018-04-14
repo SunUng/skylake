@@ -1,12 +1,12 @@
 /*
 
-const isSafari = S.Sniffer.isSafari
-const version = S.Sniffer.version
-const isTouch = S.Sniffer.isTouch
+const isSafari = S.Snif.isSafari
+const version = S.Snif.version
+const isTouch = S.Snif.isTouch
 
 */
 
-S.Sniffer = {
+S.Snif = {
     uA: navigator.userAgent.toLowerCase(),
 
     get isMobileIE () {

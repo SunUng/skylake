@@ -20,7 +20,7 @@ Look at the **src** folder in the github repository for more information
 
 ### Add scroll event listener
 
-    S.Listen(element, 'add', 'click', callback)
+    S.L(element, 'add', 'click', callback)
 
 ### Check if a variable is an object
 

@@ -12,7 +12,7 @@ S.ScrollTo({
 S.ScrollTo = function (opts) {
     var d = document
     var scrollNode = d.scrollingElement ? d.scrollingElement : S.Dom.body // Chrome v.61
-    var scrollable = S.Sniffer.isFirefox || S.Sniffer.isIE ? d.documentElement : scrollNode
+    var scrollable = S.Snif.isFirefox || S.Snif.isIE ? d.documentElement : scrollNode
     var start = pageYOffset
     var end = opts.dest
     var r = 1000
@@ -21,7 +21,7 @@ S.ScrollTo = function (opts) {
     if (start === end) {
         getCb()
     } else {
-        S.WTDisable.on()
+        S.WTP.on()
         anim.play()
     }
 
@@ -30,7 +30,7 @@ S.ScrollTo = function (opts) {
     }
 
     function getCb () {
-        S.WTDisable.off()
+        S.WTP.off()
 
         if (opts.cb) {
             opts.cb()

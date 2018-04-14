@@ -25,15 +25,15 @@ S.Scroll.prototype = {
     on: function () {
         this.startScrollY = pageYOffset
 
-        this.listener('add')
+        this.l('add')
     },
 
     off: function () {
-        this.listener('remove')
+        this.l('remove')
     },
 
-    listener: function (action) {
-        S.Listen(window, action, 'scroll', this.getRaf)
+    l: function (action) {
+        S.L(window, action, 'scroll', this.getRaf)
     },
 
     getRaf: function (e) {

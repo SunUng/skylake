@@ -337,7 +337,7 @@ S.Merom.prototype = {
 
         this.v.d.curr = S.Has(o, 'd') ? o.d : this.v.d.origin - this.v.d.curr + this.v.time.elapsed
         this.v.e.value = o.e || this.v.e.value
-        this.v.e.calc = S.Is.string(this.v.e.value) ? S.EasePack[this.v.e.value] : S.EaseCSS(this.v.e.value[0], this.v.e.value[1], this.v.e.value[2], this.v.e.value[3])
+        this.v.e.calc = S.Ease[this.v.e.value]
         this.v.delay = S.Has(o, 'delay') ? o.delay : this.v.delay
         this.v.cbDelay = S.Has(o, 'cbDelay') ? o.cbDelay : this.v.cbDelay
         this.v.cb = S.Has(o, 'cb') ? o.cb : this.v.cb

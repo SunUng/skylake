@@ -3,7 +3,7 @@
 ►►►  firstTime for window resizer
 
 const throttle = new S.Throttle({
-    callback: callback,
+    cb: callback,
     delay: 200
     onlyAtEnd: true
 })
@@ -14,7 +14,7 @@ throttle.init()
 
 S.Throttle = function (opts) {
     this.delay = opts.delay
-    this.cb = opts.callback
+    this.cb = opts.cb
     this.onlyAtEnd = opts.onlyAtEnd
     this.last
     this.timer

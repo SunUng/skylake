@@ -3,18 +3,18 @@
 GET ELEMENT BY
 ──────────────
 
-const content = S.Geb.id('content')
-const btn = S.Geb.class('btn')
-const span = S.Geb.tag('span')
+const content = S.G.id('content')
+const btn = S.G.class('btn')
+const span = S.G.tag('span')
 
 CHILD OF ELEMENT
 ────────────────
 
-const elements = S.Geb.class('elements', parentEl)
+const elements = S.G.class('elements', parentEl)
 
 */
 
-S.Geb = {
+S.G = {
     parent: function (p) {
         return p ? p : document
     },

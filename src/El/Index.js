@@ -22,7 +22,7 @@ S.Index = {
     },
 
     class: function (n, cN) {
-        var els = S.Geb.class(cN)
+        var els = S.G.class(cN)
         return this.index(n, els)
     }
 }

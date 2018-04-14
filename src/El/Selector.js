@@ -12,9 +12,9 @@ S.Selector = {
         if (S.Is.string(v)) {
             var elName = v.substring(1)
             if (v.charAt(0) === '#') {
-                el[0] = S.Geb.id(elName)
+                el[0] = S.G.id(elName)
             } else {
-                el = S.Geb.class(elName)
+                el = S.G.class(elName)
             }
         } else {
             el[0] = v

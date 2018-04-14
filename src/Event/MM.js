@@ -6,7 +6,7 @@ S.BindMaker(this, ['mmCb'])
 
 this.MM = new S.MM({
     element: '#element',
-    callback: this.mmCb
+    cb: this.mmCb
 })
 
 this.MM.on()
@@ -20,8 +20,8 @@ mmCb (posX, posY, event) {
 
 S.MM = function (opts) {
     this.el = S.Selector.el(opts.element)[0] || document
-    this.cb = opts.callback
-    this.iM = S.Sniffer.isMobile
+    this.cb = opts.cb
+    this.iM = S.Snif.isMobile
     this.tick = false
 
     S.BindMaker(this, ['getRaf', 'run'])
@@ -30,16 +30,16 @@ S.MM = function (opts) {
 S.MM.prototype = {
 
     on: function () {
-        this.listener('add')
+        this.l('add')
     },
 
     off: function () {
-        this.listener('remove')
+        this.l('remove')
     },
 
-    listener: function (action) {
+    l: function (action) {
         var type = this.iM ? 'touch' : 'mouse'
-        S.Listen(this.el, action, type + 'move', this.getRaf)
+        S.L(this.el, action, type + 'move', this.getRaf)
     },
 
     getRaf: function (e) {

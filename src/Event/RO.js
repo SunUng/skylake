@@ -3,7 +3,7 @@
 S.BindMaker(this, ['resize'])
 
 this.RO = new S.RO({
-    callback: this.resize,
+    cb: this.resize,
     throttle: {
         delay: 100,
         onlyAtEnd: true
@@ -20,14 +20,14 @@ resize (event) {
 */
 
 S.RO = function (opts) {
-    this.cb = opts.callback
-    this.iM = S.Sniffer.isMobile
+    this.cb = opts.cb
+    this.iM = S.Snif.isMobile
     this.tick = false
 
     S.BindMaker(this, ['getThrottle', 'getRaf', 'run'])
 
     this.throttle = new S.Throttle({
-        callback: this.getRaf,
+        cb: this.getRaf,
         delay: opts.throttle.delay,
         onlyAtEnd: opts.throttle.onlyAtEnd
     })
@@ -36,18 +36,18 @@ S.RO = function (opts) {
 S.RO.prototype = {
 
     on: function () {
-        this.listener('add')
+        this.l('add')
     },
 
     off: function () {
-        this.listener('remove')
+        this.l('remove')
     },
 
-    listener: function (action) {
+    l: function (action) {
         if (this.iM) {
-            S.Listen(window, action, 'orientationchange', this.getThrottle)
+            S.L(window, action, 'orientationchange', this.getThrottle)
         } else {
-            S.Listen(window, action, 'resize', this.getThrottle)
+            S.L(window, action, 'resize', this.getThrottle)
         }
     },
 
